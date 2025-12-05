@@ -51,7 +51,7 @@
             padding: 10px;
         }
 
-        /* Фон с пузырьками */
+        /* Фон с пузырьками - ОБНОВЛЕНО */
         .bubble-bg {
             position: fixed;
             width: 100%;
@@ -67,6 +67,18 @@
             animation: float 15s infinite linear;
         }
         
+        .bubble-bottom {
+            animation: floatBottom 15s infinite linear;
+        }
+        
+        .bubble-middle {
+            animation: floatMiddle 15s infinite linear;
+        }
+        
+        .bubble-top {
+            animation: floatTop 15s infinite linear;
+        }
+        
         @keyframes float {
             0% {
                 transform: translateY(100vh) translateX(0) scale(0);
@@ -76,6 +88,48 @@
             90% { opacity: 0.2; }
             100% {
                 transform: translateY(-100px) translateX(var(--bubble-x)) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Анимация для пузырьков снизу */
+        @keyframes floatBottom {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.2; }
+            100% {
+                transform: translateY(-100px) translateX(var(--bubble-x)) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Анимация для пузырьков посередине */
+        @keyframes floatMiddle {
+            0% {
+                transform: translateY(60vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.15; }
+            100% {
+                transform: translateY(-40vh) translateX(var(--bubble-x)) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Анимация для пузырьков сверху */
+        @keyframes floatTop {
+            0% {
+                transform: translateY(30vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.15; }
+            90% { opacity: 0.1; }
+            100% {
+                transform: translateY(-70vh) translateX(var(--bubble-x)) scale(1);
                 opacity: 0;
             }
         }
@@ -954,30 +1008,73 @@
             }
         };
 
-        // ========== СОЗДАНИЕ ПУЗЫРЬКОВ ФОНА ==========
+        // ========== СОЗДАНИЕ ПУЗЫРЬКОВ ФОНА - ОБНОВЛЕНО ==========
         function createBubbles() {
             const bubbleBg = document.getElementById('bubbleBg');
-            for (let i = 0; i < 20; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                
-                const size = Math.random() * 30 + 8;
-                const x = Math.random() * 100;
-                const duration = Math.random() * 10 + 10;
-                const delay = Math.random() * 15;
-                
-                bubble.style.cssText = `
-                    width: ${size}px;
-                    height: ${size}px;
-                    left: ${x}%;
-                    --bubble-x: ${(Math.random() - 0.5) * 80}px;
-                    animation-delay: ${delay}s;
-                    animation-duration: ${duration}s;
-                    opacity: ${Math.random() * 0.2 + 0.05};
-                `;
-                
-                bubbleBg.appendChild(bubble);
+            
+            // Создаем пузырьки снизу
+            for (let i = 0; i < 8; i++) {
+                createBubble(bubbleBg, 'bubble-bottom');
             }
+            
+            // Создаем пузырьки посередине
+            for (let i = 0; i < 6; i++) {
+                createBubble(bubbleBg, 'bubble-middle');
+            }
+            
+            // Создаем пузырьки сверху
+            for (let i = 0; i < 4; i++) {
+                createBubble(bubbleBg, 'bubble-top');
+            }
+            
+            // Создаем случайные пузырьки
+            for (let i = 0; i < 4; i++) {
+                createBubble(bubbleBg, 'bubble');
+            }
+        }
+        
+        function createBubble(container, bubbleClass) {
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${bubbleClass}`;
+            
+            const size = Math.random() * 25 + 5;
+            const x = Math.random() * 100;
+            const duration = Math.random() * 10 + 10;
+            const delay = Math.random() * 15;
+            
+            // Разные параметры для разных слоев пузырьков
+            let opacity = 0;
+            let bubbleX = 0;
+            
+            switch(bubbleClass) {
+                case 'bubble-bottom':
+                    opacity = Math.random() * 0.2 + 0.05;
+                    bubbleX = (Math.random() - 0.5) * 80;
+                    break;
+                case 'bubble-middle':
+                    opacity = Math.random() * 0.15 + 0.03;
+                    bubbleX = (Math.random() - 0.5) * 60;
+                    break;
+                case 'bubble-top':
+                    opacity = Math.random() * 0.1 + 0.02;
+                    bubbleX = (Math.random() - 0.5) * 40;
+                    break;
+                default:
+                    opacity = Math.random() * 0.15 + 0.04;
+                    bubbleX = (Math.random() - 0.5) * 50;
+            }
+            
+            bubble.style.cssText = `
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}%;
+                --bubble-x: ${bubbleX}px;
+                animation-delay: ${delay}s;
+                animation-duration: ${duration}s;
+                opacity: ${opacity};
+            `;
+            
+            container.appendChild(bubble);
         }
 
         // ========== ИНИЦИАЛИЗАЦИЯ КАНВАСА ==========
@@ -1042,6 +1139,7 @@
                 color: '#FF5722', 
                 type: 'good',
                 image: 'fish1.png',
+                emoji: '🐟',
                 imageObj: null,
                 width: 40,
                 height: 40
@@ -1052,6 +1150,7 @@
                 color: '#FF9800', 
                 type: 'good',
                 image: 'fish2.png',
+                emoji: '🦐',
                 imageObj: null,
                 width: 40,
                 height: 40
@@ -1062,6 +1161,7 @@
                 color: '#F44336', 
                 type: 'good',
                 image: 'fish3.png',
+                emoji: '🦀',
                 imageObj: null,
                 width: 40,
                 height: 40
@@ -1072,6 +1172,7 @@
                 color: '#2196F3', 
                 type: 'good',
                 image: 'fish4.png',
+                emoji: '🐠',
                 imageObj: null,
                 width: 40,
                 height: 40
@@ -1082,6 +1183,7 @@
                 color: '#E91E63', 
                 type: 'good',
                 image: 'fish5.png',
+                emoji: '🐡',
                 imageObj: null,
                 width: 40,
                 height: 40
@@ -1543,16 +1645,29 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Фоновые пузырьки
-            ctx.globalAlpha = 0.15;
+            // Фоновые пузырьки на канвасе (дополнительные)
+            ctx.globalAlpha = 0.1;
             ctx.fillStyle = '#1e90ff';
             
-            for (let i = 0; i < 6; i++) {
-                const bubbleSize = 4 + Math.sin(Game.waveTime * 2 + i * 3) * 2;
-                const bubbleX = (Math.sin(Game.waveTime * 0.8 + i) * 80 + i * 50) % canvas.width;
-                const bubbleY = canvas.height * 0.85 + Math.sin(Game.waveTime * 1.2 + i * 2) * 15;
+            for (let i = 0; i < 3; i++) {
+                const bubbleSize = 3 + Math.sin(Game.waveTime * 2 + i * 2) * 2;
+                const bubbleX = (Math.sin(Game.waveTime * 0.5 + i) * 60 + i * 70) % canvas.width;
+                const bubbleY = canvas.height * 0.6 + Math.sin(Game.waveTime * 1.5 + i * 1.5) * 10;
                 
-                if (bubbleY > canvas.height * 0.7) {
+                if (bubbleY > 0 && bubbleY < canvas.height) {
+                    ctx.beginPath();
+                    ctx.arc(bubbleX, bubbleY, bubbleSize, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // Пузырьки в верхней части
+            for (let i = 0; i < 2; i++) {
+                const bubbleSize = 2 + Math.sin(Game.waveTime * 3 + i * 4) * 1;
+                const bubbleX = (Math.cos(Game.waveTime * 0.3 + i) * 40 + i * 90) % canvas.width;
+                const bubbleY = canvas.height * 0.3 + Math.sin(Game.waveTime * 2 + i * 3) * 8;
+                
+                if (bubbleY > 0 && bubbleY < canvas.height) {
                     ctx.beginPath();
                     ctx.arc(bubbleX, bubbleY, bubbleSize, 0, Math.PI * 2);
                     ctx.fill();
