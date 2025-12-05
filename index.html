@@ -995,14 +995,57 @@
         };
 
         // ========== ТИПЫ ПРЕДМЕТОВ ==========
-        const ItemTypes = [
-            { emoji: '🐟', name: 'Сёмга', points: 10, color: '#FF5722', type: 'good' },
-            { emoji: '🦐', name: 'Креветка', points: 15, color: '#FF9800', type: 'good' },
-            { emoji: '🦀', name: 'Краб', points: 20, color: '#F44336', type: 'good' },
-            { emoji: '🐠', name: 'Треска', points: 8, color: '#2196F3', type: 'good' },
-            { emoji: '🐡', name: 'Икра', points: 50, color: '#E91E63', type: 'good' },
-            { emoji: '💣', name: 'Паразиты', points: -20, color: '#607D8B', type: 'bad' },
-        ];
+// ========== ТИПЫ ПРЕДМЕТОВ С ВАШИМИ PNG ФАЙЛАМИ ==========
+const ItemTypes = [
+    { 
+        name: 'Сёмга', 
+        points: 10, 
+        color: '#FF5722', 
+        type: 'good',
+        image: 'assets/images/fish1.png',  // Первая рыба
+        emoji: '🐟'  // Fallback если изображение не загрузится
+    },
+    { 
+        name: 'Креветка', 
+        points: 15, 
+        color: '#FF9800', 
+        type: 'good',
+        image: 'assets/images/fish2.png',  // Вторая рыба
+        emoji: '🦐'
+    },
+    { 
+        name: 'Краб', 
+        points: 20, 
+        color: '#F44336', 
+        type: 'good',
+        image: 'assets/images/fish3.png',  // Третья рыба
+        emoji: '🦀'
+    },
+    { 
+        name: 'Треска', 
+        points: 8, 
+        color: '#2196F3', 
+        type: 'good',
+        image: 'assets/images/fish4.png',  // Четвертая рыба
+        emoji: '🐠'
+    },
+    { 
+        name: 'Икра', 
+        points: 50, 
+        color: '#E91E63', 
+        type: 'good',
+        image: 'assets/images/fish5.png',  // Пятая рыба
+        emoji: '🐡'
+    },
+    { 
+        name: 'Паразиты', 
+        points: -20, 
+        color: '#607D8B', 
+        type: 'bad',
+        image: 'assets/images/fish6.png',  // Шестая рыба (паразиты)
+        emoji: '💣'
+    },
+];
 
         // ========== ИНИЦИАЛИЗАЦИЯ ИГРЫ ==========
         function initGame() {
@@ -1588,6 +1631,7 @@
     </script>
 </body>
 </html>
+
 
 
 
