@@ -1146,20 +1146,6 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Блики на воде
-            for (let i = 0; i < 5; i++) {
-                const x = (Math.sin(Game.waveOffset * 2 + i) * 50 + i * 100) % canvas.width;
-                const y = 50 + Math.sin(Game.waveOffset + i) * 20;
-                const size = 30 + Math.sin(Game.waveOffset + i * 2) * 10;
-                
-                ctx.globalAlpha = 0.1;
-                ctx.fillStyle = '#a8d0e6';
-                ctx.beginPath();
-                ctx.ellipse(x, y, size, size / 3, 0, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            ctx.globalAlpha = 1;
-            
             // 1. Плавающий планктон (темно-синие точки) - в верхней 40% экрана
             const effectHeight = canvas.height * 0.4;
             
@@ -1517,6 +1503,7 @@
     </script>
 </body>
 </html>
+
 
 
 
