@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Бухта | Северодвинск</title>
+    <title>Морской Ловец | Бухта Северодвинск</title>
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Russo+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -42,7 +42,7 @@
         
         body {
             font-family: 'Exo 2', sans-serif;
-            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--navy-dark) 100%);
+            background: #ffffff; /* Белый фон вместо синего градиента */
             color: var(--text-light);
             min-height: 100vh;
             overflow-x: hidden;
@@ -79,7 +79,7 @@
             }
         }
 
-        /* Волны в игровом поле */
+        /* Волны в игровом поле - ОСТАВЛЯЕМ БЕЛЫМИ */
         .wave-layer {
             position: absolute;
             bottom: 0;
@@ -95,7 +95,7 @@
             bottom: 0;
             width: 200%;
             height: 100px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="rgba(168,208,230,0.2)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="white"/></svg>');
             background-size: 50% 100%;
             animation: wave 12s linear infinite;
         }
@@ -104,7 +104,7 @@
             bottom: 20px;
             opacity: 0.5;
             animation: wave 10s linear infinite;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="rgba(0,212,255,0.15)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="white"/></svg>');
         }
         
         @keyframes wave {
@@ -292,7 +292,7 @@
             border: 3px solid rgba(0, 212, 255, 0.5);
             margin-bottom: 20px;
             height: 500px;
-            background: linear-gradient(var(--deep-blue), var(--navy-dark));
+            background: transparent; /* Прозрачный фон вместо синего */
         }
         
         #gameCanvas {
@@ -621,7 +621,7 @@
     <div class="game-container">
         <!-- Шапка игры -->
         <header class="game-header">
-            <h1 class="game-title">🚢 Бухта - Северодвинск</h1>
+            <h1 class="game-title">🚢 Морской Ловец</h1>
             <div class="game-subtitle">БУХТА • Свежие морепродукты</div>
             <div style="margin-top: 10px; font-size: 0.9em; color: #88ddff;">
                 Лови рыбу • Получай скидки • Заказывай в БУХТЕ
@@ -677,6 +677,7 @@
                     <i class="fas fa-pause" style="font-size: 0.8em;"></i>
                     ПАУЗА
                 </div>
+                <small>Нажмите ПРОДОЛЖИТЬ или ПРОБЕЛ</small>
             </div>
         </div>
 
@@ -781,6 +782,10 @@
             wave1.className = 'wave';
             waveLayer.appendChild(wave1);
             
+            // Вторая волна
+            const wave2 = document.createElement('div');
+            wave2.className = 'wave';
+            waveLayer.appendChild(wave2);
         }
 
         // ========== ИНИЦИАЛИЗАЦИЯ КАНВАСА ==========
@@ -941,22 +946,22 @@
 
         // ========== ОТРИСОВКА КОРАБЛИКА ==========
         // Загрузка изображения один раз
-let shipImage = null;
-if (!shipImage) {
-    shipImage = new Image();
-    shipImage.src = 'ship5.png'; // ← Это ссылка на вашу картинку
-}
+        let shipImage = null;
+        if (!shipImage) {
+            shipImage = new Image();
+            shipImage.src = 'ship5.png'; // ← Это ссылка на вашу картинку
+        }
 
-function drawShip() {
-    if (!shipImage || !shipImage.complete || Ship.alpha <= 0) return;
-    ctx.save();
-    ctx.globalAlpha = Ship.alpha;
-    ctx.translate(Ship.x + Ship.width / 2, Ship.y + Ship.height / 2);
-    ctx.rotate(Ship.tilt);
-    // Рисуем изображение по центру
-    ctx.drawImage(shipImage, -Ship.width / 2, -Ship.height / 2, Ship.width, Ship.height);
-    ctx.restore();
-}
+        function drawShip() {
+            if (!shipImage || !shipImage.complete || Ship.alpha <= 0) return;
+            ctx.save();
+            ctx.globalAlpha = Ship.alpha;
+            ctx.translate(Ship.x + Ship.width / 2, Ship.y + Ship.height / 2);
+            ctx.rotate(Ship.tilt);
+            // Рисуем изображение по центру
+            ctx.drawImage(shipImage, -Ship.width / 2, -Ship.height / 2, Ship.width, Ship.height);
+            ctx.restore();
+        }
 
         // ========== ОТРИСОВКА ПРЕДМЕТОВ С ВОЛНАМИ ==========
         function drawItems() {
@@ -1136,26 +1141,78 @@ function drawShip() {
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Фон моря
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#0a3260');
-            gradient.addColorStop(0.7, '#0a2a5e');
-            gradient.addColorStop(1, '#082f49');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Убрали синий градиент и белые блики
             
-            // Блики на воде
-            for (let i = 0; i < 5; i++) {
-                const x = (Math.sin(Game.waveOffset * 2 + i) * 50 + i * 100) % canvas.width;
-                const y = 50 + Math.sin(Game.waveOffset + i) * 20;
-                const size = 30 + Math.sin(Game.waveOffset + i * 2) * 10;
+            // Эффекты движения - только в верхней 40% экрана
+            const effectHeight = canvas.height * 0.4;
+            
+            // 1. Вариант 4: Плавающие водоросли/планктон
+            for (let i = 0; i < 15; i++) {
+                const particleX = (Math.sin(Game.waveOffset * 0.5 + i) * 100 + i * 70) % canvas.width;
+                const particleY = (Game.waveOffset * 20 + i * 30) % effectHeight;
                 
-                ctx.globalAlpha = 0.1;
-                ctx.fillStyle = '#a8d0e6';
-                ctx.beginPath();
-                ctx.ellipse(x, y, size, size / 3, 0, 0, Math.PI * 2);
-                ctx.fill();
+                // Только в верхней части экрана
+                if (particleY < effectHeight) {
+                    const size = 3 + Math.sin(Game.waveOffset + i) * 1.5;
+                    const alpha = 0.1 + Math.sin(Game.waveOffset * 2 + i) * 0.05;
+                    
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = i % 2 === 0 ? '#0a2a5e' : '#1e90ff'; // Темно-синие цвета
+                    
+                    ctx.beginPath();
+                    ctx.arc(particleX, particleY, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
+            
+            // 2. Вариант 3: Парящие чайки/птицы
+            for (let i = 0; i < 2; i++) {
+                const birdSpeed = 0.5;
+                const birdX = (Game.waveOffset * birdSpeed * 100 + i * 200) % (canvas.width + 100);
+                const birdY = effectHeight * 0.2 + Math.sin(Game.waveOffset * 2 + i) * 15;
+                
+                ctx.globalAlpha = 0.25;
+                ctx.fillStyle = '#333333'; // Темно-серый
+                
+                // Рисуем птицу (галочка)
+                const size = 8;
+                ctx.beginPath();
+                ctx.moveTo(birdX - size, birdY);
+                ctx.lineTo(birdX, birdY - size/2);
+                ctx.lineTo(birdX + size, birdY);
+                ctx.lineTo(birdX, birdY + size/2);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Контур птицы
+                ctx.globalAlpha = 0.4;
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            
+            // 3. Вариант 2: Волновые линии (интерактивные)
+            ctx.globalAlpha = 0.15;
+            ctx.strokeStyle = '#0a2a5e'; // Темно-синий
+            ctx.lineWidth = 2;
+            
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                const amplitude = 15 + Math.sin(Game.waveOffset + i) * 5; // Амплитуда волны
+                const frequency = 0.02; // Частота волны
+                const baseY = effectHeight * 0.4 + i * 20;
+                
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const y = baseY + Math.sin(x * frequency + Game.waveOffset * 2) * amplitude;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+            
             ctx.globalAlpha = 1;
             
             drawItems();
@@ -1437,6 +1494,7 @@ function drawShip() {
     </script>
 </body>
 </html>
+
 
 
 
