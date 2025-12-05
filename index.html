@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -940,22 +940,22 @@
 
         // ========== ОТРИСОВКА КОРАБЛИКА ==========
         // Загрузка изображения один раз
-let shipImage = null;
-if (!shipImage) {
-    shipImage = new Image();
-    shipImage.src = 'ship5.png'; // ← Это ссылка на вашу картинку
-}
+        let shipImage = null;
+        if (!shipImage) {
+            shipImage = new Image();
+            shipImage.src = 'ship5.png'; // ← Это ссылка на вашу картинку
+        }
 
-function drawShip() {
-    if (!shipImage || !shipImage.complete || Ship.alpha <= 0) return;
-    ctx.save();
-    ctx.globalAlpha = Ship.alpha;
-    ctx.translate(Ship.x + Ship.width / 2, Ship.y + Ship.height / 2);
-    ctx.rotate(Ship.tilt);
-    // Рисуем изображение по центру
-    ctx.drawImage(shipImage, -Ship.width / 2, -Ship.height / 2, Ship.width, Ship.height);
-    ctx.restore();
-}
+        function drawShip() {
+            if (!shipImage || !shipImage.complete || Ship.alpha <= 0) return;
+            ctx.save();
+            ctx.globalAlpha = Ship.alpha;
+            ctx.translate(Ship.x + Ship.width / 2, Ship.y + Ship.height / 2);
+            ctx.rotate(Ship.tilt);
+            // Рисуем изображение по центру
+            ctx.drawImage(shipImage, -Ship.width / 2, -Ship.height / 2, Ship.width, Ship.height);
+            ctx.restore();
+        }
 
         // ========== ОТРИСОВКА ПРЕДМЕТОВ С ВОЛНАМИ ==========
         function drawItems() {
@@ -1135,26 +1135,53 @@ function drawShip() {
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Фон моря
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#0a3260');
-            gradient.addColorStop(0.7, '#0a2a5e');
-            gradient.addColorStop(1, '#082f49');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Убрали синий градиент фона и белые блики на воде
             
-            // Блики на воде
-            for (let i = 0; i < 5; i++) {
-                const x = (Math.sin(Game.waveOffset * 2 + i) * 50 + i * 100) % canvas.width;
-                const y = 50 + Math.sin(Game.waveOffset + i) * 20;
-                const size = 30 + Math.sin(Game.waveOffset + i * 2) * 10;
+            // Эффекты движения
+            
+            // 1. Плавающий планктон (темно-синие точки) - в верхней 40% экрана
+            const effectHeight = canvas.height * 0.4;
+            
+            for (let i = 0; i < 15; i++) {
+                const particleX = (Math.sin(Game.waveOffset * 0.5 + i) * 100 + i * 70) % canvas.width;
+                const particleY = (Game.waveOffset * 20 + i * 30) % effectHeight;
                 
-                ctx.globalAlpha = 0.1;
-                ctx.fillStyle = '#a8d0e6';
-                ctx.beginPath();
-                ctx.ellipse(x, y, size, size / 3, 0, 0, Math.PI * 2);
-                ctx.fill();
+                // Только в верхней части экрана
+                if (particleY < effectHeight) {
+                    const size = 3 + Math.sin(Game.waveOffset + i) * 1.5;
+                    const alpha = 0.1 + Math.sin(Game.waveOffset * 2 + i) * 0.05;
+                    
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = i % 2 === 0 ? '#0a2a5e' : '#1e90ff'; // Темно-синие цвета
+                    
+                    ctx.beginPath();
+                    ctx.arc(particleX, particleY, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
+            
+            // 2. Волновые линии (темно-синие волны) - ВНИЗУ вместо старых волн
+            ctx.globalAlpha = 0.15;
+            ctx.strokeStyle = '#0a2a5e'; // Темно-синий
+            ctx.lineWidth = 2;
+            
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                const amplitude = 10 + Math.sin(Game.waveOffset + i) * 5; // Амплитуда волны
+                const frequency = 0.02; // Частота волны
+                const baseY = canvas.height * 0.8 + i * 10; // Располагаем внизу (80% высоты)
+                
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const y = baseY + Math.sin(x * frequency + Game.waveOffset * 2) * amplitude;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+            
             ctx.globalAlpha = 1;
             
             drawItems();
@@ -1436,7 +1463,6 @@ function drawShip() {
     </script>
 </body>
 </html>
-
 
 
 
