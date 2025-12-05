@@ -816,7 +816,8 @@
             shipSinking: false,
             highScore: localStorage.getItem('seafood_highscore') || 0,
             waveOffset: 0,
-            waveSpeed: 0.02
+            waveSpeed: 0.02,
+            waveTime: 0 // Для отслеживания времени волн
         };
 
         const Ship = {
@@ -858,6 +859,7 @@
             Game.health = 5;
             Game.shipSinking = false;
             Game.waveOffset = 0;
+            Game.waveTime = 0;
             
             Ship.x = canvas.width / 2 - Ship.width / 2;
             Ship.baseY = canvas.height - Ship.height - 20;
@@ -928,6 +930,7 @@
         // ========== ОБНОВЛЕНИЕ ВОЛН ==========
         function updateWaves(deltaTime) {
             Game.waveOffset += Game.waveSpeed * deltaTime * 60;
+            Game.waveTime += deltaTime;
             
             // Обновление позиции корабля на волнах
             const wavePosition = Math.sin(Game.waveOffset + Ship.x * Ship.waveFrequency) * Ship.waveHeight;
@@ -1135,9 +1138,27 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Убрали синий градиент фона и белые блики на воде
+            // Фон моря
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#0a3260');
+            gradient.addColorStop(0.7, '#0a2a5e');
+            gradient.addColorStop(1, '#082f49');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Эффекты движения
+            // Блики на воде
+            for (let i = 0; i < 5; i++) {
+                const x = (Math.sin(Game.waveOffset * 2 + i) * 50 + i * 100) % canvas.width;
+                const y = 50 + Math.sin(Game.waveOffset + i) * 20;
+                const size = 30 + Math.sin(Game.waveOffset + i * 2) * 10;
+                
+                ctx.globalAlpha = 0.1;
+                ctx.fillStyle = '#a8d0e6';
+                ctx.beginPath();
+                ctx.ellipse(x, y, size, size / 3, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
             
             // 1. Плавающий планктон (темно-синие точки) - в верхней 40% экрана
             const effectHeight = canvas.height * 0.4;
@@ -1160,26 +1181,59 @@
                 }
             }
             
-            // 2. Волновые линии (темно-синие волны) - ВНИЗУ вместо старых волн
-            ctx.globalAlpha = 0.15;
-            ctx.strokeStyle = '#0a2a5e'; // Темно-синий
-            ctx.lineWidth = 2;
+            // 2. ЭФФЕКТ ДВИЖЕНИЯ ВМЕСТО ВОЛНОВЫХ ЛИНИЙ
+            // Динамичные плавающие волны внизу экрана
+            ctx.globalAlpha = 0.2;
+            ctx.fillStyle = '#0a2a5e'; // Темно-синий цвет
             
-            for (let i = 0; i < 3; i++) {
-                ctx.beginPath();
-                const amplitude = 10 + Math.sin(Game.waveOffset + i) * 5; // Амплитуда волны
-                const frequency = 0.02; // Частота волны
-                const baseY = canvas.height * 0.8 + i * 10; // Располагаем внизу (80% высоты)
+            for (let i = 0; i < 5; i++) {
+                // Создаем движущиеся волны с разной скоростью и амплитудой
+                const waveHeight = 15 + Math.sin(Game.waveTime * 1.5 + i * 2) * 5;
+                const waveSpeed = 0.5 + i * 0.2;
+                const waveOffset = Game.waveTime * waveSpeed;
                 
-                for (let x = 0; x < canvas.width; x += 2) {
-                    const y = baseY + Math.sin(x * frequency + Game.waveOffset * 2) * amplitude;
-                    if (x === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
+                ctx.beginPath();
+                const baseY = canvas.height * 0.8 + i * 5;
+                
+                // Начинаем рисовать волну
+                ctx.moveTo(0, baseY + Math.sin(waveOffset) * waveHeight);
+                
+                for (let x = 0; x <= canvas.width; x += 10) {
+                    const y = baseY + Math.sin(x * 0.02 + waveOffset) * waveHeight;
+                    ctx.lineTo(x, y);
                 }
-                ctx.stroke();
+                
+                // Завершаем фигуру до низа экрана
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            // 3. Плавающие пузырьки внизу (дополнительный эффект движения)
+            ctx.globalAlpha = 0.15;
+            ctx.fillStyle = '#1e90ff';
+            
+            for (let i = 0; i < 8; i++) {
+                const bubbleSize = 5 + Math.sin(Game.waveTime * 2 + i * 3) * 3;
+                const bubbleX = (Math.sin(Game.waveTime * 0.8 + i) * 100 + i * 60) % canvas.width;
+                const bubbleY = canvas.height * 0.85 + Math.sin(Game.waveTime * 1.2 + i * 2) * 20;
+                
+                // Рисуем только в нижней части
+                if (bubbleY > canvas.height * 0.7) {
+                    ctx.beginPath();
+                    ctx.arc(bubbleX, bubbleY, bubbleSize, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Внутренний круг для эффекта объема
+                    ctx.globalAlpha = 0.3;
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(bubbleX - bubbleSize/3, bubbleY - bubbleSize/3, bubbleSize/3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#1e90ff';
+                    ctx.globalAlpha = 0.15;
+                }
             }
             
             ctx.globalAlpha = 1;
