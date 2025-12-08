@@ -119,6 +119,122 @@
                 opacity: 0;
             }
         }
+        /* Стартовый экран */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--navy-dark) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.5s ease-out;
+        }
+        .start-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .start-title {
+            font-family: 'Russo One', sans-serif;
+            font-size: 3em;
+            background: linear-gradient(90deg, var(--aurora-teal), var(--aurora-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+            animation: pulseTitle 2s infinite alternate;
+        }
+        @keyframes pulseTitle {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        .start-subtitle {
+            font-size: 1.2em;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .start-button {
+            background: linear-gradient(45deg, var(--aurora-teal), var(--aurora-green));
+            border: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.5em;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 250px;
+            justify-content: center;
+            z-index: 10;
+        }
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        .start-button:hover::before {
+            left: 100%;
+        }
+        .start-button:active {
+            transform: scale(0.95);
+        }
+        .start-button-glow {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+            border-radius: 70px;
+            z-index: -1;
+            animation: pulseGlow 2s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.7; transform: scale(1.05); }
+        }
+        .start-instructions {
+            margin-top: 40px;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .instruction-item i {
+            color: var(--aurora-teal);
+            font-size: 1.2em;
+            min-width: 30px;
+        }
         /* Основной контейнер */
         .game-container {
             max-width: 600px;
@@ -129,6 +245,10 @@
             display: flex;
             flex-direction: column;
             min-height: calc(100vh - 20px);
+            display: none; /* Скрыт до старта игры */
+        }
+        .game-container.visible {
+            display: flex;
         }
         /* Шапка игры - КОМПАКТНАЯ */
         .game-header {
@@ -677,7 +797,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            z-index: 3000;
             transition: opacity 0.5s;
         }
         .loading-spinner {
@@ -702,9 +822,47 @@
         <div style="color: var(--aurora-teal); font-size: 1.2em; margin-top: 10px;">Загрузка изображений...</div>
         <div style="color: var(--text-muted); font-size: 0.9em; margin-top: 5px;" id="loadingProgress">0/7</div>
     </div>
+    
+    <!-- Стартовый экран -->
+    <div class="start-screen" id="startScreen">
+        <h1 class="start-title">⚓ МОРСКОЙ ЛОВЕЦ</h1>
+        <div class="start-subtitle">БУХТА • СЕВЕРОДВИНСК</div>
+        
+        <div class="start-instructions">
+            <div class="instruction-item">
+                <i class="fas fa-anchor"></i>
+                <span>Управляйте кораблем мышью или пальцем</span>
+            </div>
+            <div class="instruction-item">
+                <i class="fas fa-fish"></i>
+                <span>Ловите рыбу для получения очков</span>
+            </div>
+            <div class="instruction-item">
+                <i class="fas fa-skull-crossbones"></i>
+                <span>Избегайте опасных предметов</span>
+            </div>
+            <div class="instruction-item">
+                <i class="fas fa-gift"></i>
+                <span>Обменивайте очки на скидки в БУХТЕ</span>
+            </div>
+        </div>
+        
+        <button class="start-button" id="startButton">
+            <div class="start-button-glow"></div>
+            <i class="fas fa-play"></i>
+            НАЧАТЬ ИГРУ
+        </button>
+        
+        <div style="margin-top: 30px; color: var(--text-muted); font-size: 0.8em;">
+            <i class="fas fa-trophy"></i> Ваш рекорд: <span id="startHighScore">0</span> ⭐
+        </div>
+    </div>
+    
     <!-- Фон с пузырьками -->
     <div class="bubble-bg" id="bubbleBg"></div>
-    <div class="game-container">
+    
+    <!-- Основной игровой интерфейс -->
+    <div class="game-container" id="gameContainer">
         <!-- Шапка игры - КОМПАКТНАЯ -->
         <header class="game-header">
             <h1 class="game-title">⚓ Бухта</h1>
@@ -1148,7 +1306,8 @@
                         document.getElementById('loadingScreen').style.opacity = '0';
                         setTimeout(() => {
                             document.getElementById('loadingScreen').style.display = 'none';
-                            initGame();
+                            // Вместо initGame() показываем стартовый экран
+                            showStartScreen();
                         }, 500);
                     }, 500);
                 }
@@ -1184,7 +1343,8 @@
                             document.getElementById('loadingScreen').style.opacity = '0';
                             setTimeout(() => {
                                 document.getElementById('loadingScreen').style.display = 'none';
-                                initGame();
+                                // Вместо initGame() показываем стартовый экран
+                                showStartScreen();
                             }, 500);
                         }, 500);
                     }
@@ -1235,6 +1395,16 @@
             const img = new Image();
             img.src = canvas.toDataURL();
             return img;
+        }
+        
+        // ========== ПОКАЗ СТАРТОВОГО ЭКРАНА ==========
+        function showStartScreen() {
+            // Показываем стартовый экран
+            document.getElementById('startScreen').style.display = 'flex';
+            
+            // Загружаем рекорд для отображения
+            const highScore = localStorage.getItem('seafood_highscore') || '0';
+            document.getElementById('startHighScore').textContent = highScore;
         }
         
         // ========== ИНИЦИАЛИЗАЦИЯ ИГРЫ ==========
@@ -1723,6 +1893,17 @@
         }
         
         // ========== УПРАВЛЕНИЕ КНОПКАМИ ==========
+        document.getElementById('startButton').addEventListener('click', function() {
+            // Скрываем стартовый экран
+            document.getElementById('startScreen').classList.add('hidden');
+            
+            // Показываем игровой интерфейс
+            setTimeout(() => {
+                document.getElementById('gameContainer').classList.add('visible');
+                initGame();
+            }, 500);
+        });
+        
         document.getElementById('playBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             if (!Game.running) {
