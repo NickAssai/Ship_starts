@@ -37,7 +37,6 @@
         }
         body {
             font-family: 'Exo 2', sans-serif;
-            /* Убираем градиентный фон, он теперь заменен видео */
             background: transparent;
             color: var(--text-light);
             min-height: 100vh;
@@ -45,10 +44,6 @@
             touch-action: manipulation;
             position: relative;
             padding: 10px;
-        }
-        /* Убираем фон с пузырьками, он больше не нужен */
-        .bubble-bg {
-            display: none;
         }
         /* Фоновое видео */
         #bgVideo {
@@ -59,10 +54,209 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
-            opacity: 0.8; /* Слегка затемняем видео, чтобы текст был читаем */
-            pointer-events: none; /* Позволяет кликать по элементам поверх видео */
+            opacity: 0.8;
+            pointer-events: none;
         }
-        /* Основной контейнер */
+        
+        /* ========== НОВЫЙ СТАРТОВЫЙ ЭКРАН ========== */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 42, 94, 0.95), rgba(22, 36, 71, 0.98));
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px;
+        }
+        
+        .start-content {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+        
+        .start-title {
+            font-family: 'Russo One', sans-serif;
+            font-size: 2.5em;
+            background: linear-gradient(90deg, var(--aurora-teal), var(--aurora-green), var(--aurora-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .start-subtitle {
+            font-size: 1.1em;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        /* Анимированная кнопка "НАЧАТЬ ИГРУ" */
+        .start-button {
+            background: linear-gradient(45deg, var(--aurora-teal), var(--aurora-green));
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.3em;
+            font-weight: 800;
+            padding: 20px 50px;
+            margin: 30px 0;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 250px;
+            letter-spacing: 1px;
+        }
+        
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .start-button:hover::before {
+            left: 100%;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.5);
+        }
+        
+        .start-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
+        .start-button .pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: inherit;
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+        }
+        
+        /* Блок инструкций */
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            color: var(--aurora-teal);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions p {
+            margin: 10px 0;
+            color: var(--text-light);
+            font-size: 0.95em;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .instructions i {
+            color: var(--aurora-green);
+            width: 20px;
+        }
+        
+        /* Блок рекорда */
+        .high-score-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(157, 78, 221, 0.1));
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            text-align: center;
+        }
+        
+        .high-score-label {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        
+        .high-score-value {
+            font-size: 2em;
+            font-weight: 800;
+            color: var(--aurora-teal);
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Плавный переход */
+        .start-screen.hiding {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
+        
+        /* Основной контейнер игры */
         .game-container {
             max-width: 600px;
             margin: 0 auto;
@@ -72,7 +266,16 @@
             display: flex;
             flex-direction: column;
             min-height: calc(100vh - 20px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
+        .game-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Шапка игры - КОМПАКТНАЯ */
         .game-header {
             text-align: center;
@@ -85,6 +288,7 @@
             margin-bottom: 12px;
             position: relative;
             overflow: hidden;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
         }
         .game-header::before {
             content: '';
@@ -138,6 +342,7 @@
             margin-bottom: 12px;
             position: relative;
             overflow: hidden;
+            animation: fadeInUp 0.6s ease-out 0.5s both;
         }
         .stats-grid::after {
             content: '';
@@ -177,6 +382,7 @@
         /* Прогресс уровня - КОМПАКТНЫЙ */
         .progress-container {
             margin: 10px 0;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
         }
         .progress-label {
             display: flex;
@@ -220,9 +426,9 @@
             height: calc(55vh - 100px);
             min-height: 300px;
             max-height: 450px;
-            /* Убираем фон, он теперь видео */
             background: transparent;
             flex-grow: 1;
+            animation: fadeInUp 0.6s ease-out 0.7s both;
         }
         #gameCanvas {
             display: block;
@@ -260,6 +466,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin: 12px 0;
+            animation: fadeInUp 0.6s ease-out 0.8s both;
         }
         .control-btn {
             padding: 12px 8px;
@@ -464,6 +671,7 @@
             padding: 8px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
+            animation: fadeInUp 0.6s ease-out 0.9s both;
         }
         /* Адаптивность для БОЛЬШИХ экранов */
         @media (min-width: 768px) {
@@ -514,6 +722,16 @@
             .progress-bar {
                 height: 8px;
             }
+            
+            /* Стартовый экран для больших экранов */
+            .start-title {
+                font-size: 3em;
+            }
+            .start-button {
+                font-size: 1.5em;
+                padding: 25px 60px;
+                min-width: 300px;
+            }
         }
         /* Адаптивность для ОЧЕНЬ больших экранов */
         @media (min-width: 1024px) {
@@ -553,6 +771,20 @@
             }
             .stat-label {
                 font-size: 0.6em;
+            }
+            
+            /* Стартовый экран для маленьких экранов */
+            .start-title {
+                font-size: 2em;
+            }
+            .start-button {
+                font-size: 1.1em;
+                padding: 18px 30px;
+                min-width: 200px;
+            }
+            .instructions {
+                padding: 15px;
+                font-size: 0.9em;
             }
         }
         /* Ландшафтная ориентация */
@@ -608,58 +840,78 @@
             .progress-bar {
                 height: 4px;
             }
-        }
-        /* Экран загрузки */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--deep-blue);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            transition: opacity 0.5s;
-        }
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(0, 212, 255, 0.3);
-            border-top: 5px solid var(--aurora-teal);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            
+            /* Стартовый экран для ландшафта */
+            .start-content {
+                max-width: 90%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                align-items: center;
+                text-align: left;
+            }
+            .start-title {
+                font-size: 2em;
+                grid-column: span 2;
+                text-align: center;
+            }
+            .start-button {
+                margin: 0;
+                min-width: auto;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Экран загрузки -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <div style="color: var(--aurora-teal); font-size: 1.2em; margin-top: 10px;">Загрузка изображений...</div>
-        <div style="color: var(--text-muted); font-size: 0.9em; margin-top: 5px;" id="loadingProgress">0/7</div>
+    <!-- НОВЫЙ СТАРТОВЫЙ ЭКРАН -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-content">
+            <h1 class="start-title">⚓ МОРСКОЙ ЛОВЕЦ</h1>
+            <div class="start-subtitle">БУХТА • Свежие морепродукты в Северодвинске</div>
+            
+            <!-- Блок личного рекорда -->
+            <div class="high-score-card">
+                <div class="high-score-label">ВАШ ЛИЧНЫЙ РЕКОРД</div>
+                <div class="high-score-value" id="startHighScore">0</div>
+            </div>
+            
+            <!-- Анимированная кнопка -->
+            <button class="start-button" id="startButton">
+                <i class="fas fa-anchor"></i>
+                НАЧАТЬ ИГРУ
+                <div class="pulse"></div>
+            </button>
+            
+            <!-- Инструкции -->
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> КАК ИГРАТЬ:</h3>
+                <p><i class="fas fa-mouse-pointer"></i> <strong>Управление:</strong> Двигайте корабль мышью или пальцем</p>
+                <p><i class="fas fa-fish"></i> <strong>Цель:</strong> Ловите рыбу, избегайте паразитов</p>
+                <p><i class="fas fa-coins"></i> <strong>Очки:</strong> Получайте очки за каждую пойманную рыбу</p>
+                <p><i class="fas fa-gift"></i> <strong>Награды:</strong> Обменивайте очки на скидки в БУХТЕ</p>
+            </div>
+            
+            <div style="color: var(--text-muted); font-size: 0.8em; margin-top: 20px;">
+                Доставка свежих морепродуктов по Северодвинску
+            </div>
+        </div>
     </div>
+    
     <!-- Фоновое видео -->
     <video id="bgVideo" autoplay muted loop playsinline>
         <source src="fon.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
     </video>
-    <!-- Фон с пузырьками (убран, но оставлен для совместимости) -->
-    <div class="bubble-bg" id="bubbleBg"></div>
-    <div class="game-container">
+    
+    <!-- Основной контейнер игры (изначально скрыт) -->
+    <div class="game-container" id="gameContainer">
         <!-- Шапка игры - КОМПАКТНАЯ -->
         <header class="game-header">
             <h1 class="game-title">⚓ Бухта</h1>
             <div class="game-subtitle">СВЕЖИЕ МОРЕПРОДУКТЫ | СЕВЕРОДВИНСК</div>
             <div class="game-slogan">Лови рыбу • Получай скидки • Заказывай в БУХТЕ</div>
         </header>
+        
         <!-- Статистика - КОМПАКТНАЯ -->
         <div class="stats-grid">
             <div>
@@ -679,6 +931,7 @@
                 <div class="stat-value" id="caught">0</div>
             </div>
         </div>
+        
         <!-- Прогресс уровня - КОМПАКТНЫЙ -->
         <div class="progress-container">
             <div class="progress-label">
@@ -689,6 +942,7 @@
                 <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
+        
         <!-- Игровая зона -->
         <div class="game-area">
             <canvas id="gameCanvas"></canvas>
@@ -699,6 +953,7 @@
                 </div>
             </div>
         </div>
+        
         <!-- Управление - КОМПАКТНОЕ -->
         <div class="controls">
             <button class="control-btn" id="playBtn">
@@ -714,11 +969,13 @@
                 <i class="fas fa-volume-up"></i>
             </button>
         </div>
+        
         <!-- Футер - КОМПАКТНЫЙ -->
         <footer class="game-footer">
             <p>Свежие морепродукты в БУХТЕ • Доставка по городу • Северодвинск</p>
         </footer>
     </div>
+    
     <!-- Модальное окно магазина -->
     <div class="shop-modal" id="shopModal">
         <div class="shop-card">
@@ -752,6 +1009,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         // ========== ИНИЦИАЛИЗАЦИЯ VK ==========
         if (typeof vkBridge !== 'undefined') {
@@ -759,6 +1017,104 @@
                 .then(() => console.log("VK Mini App инициализирован"))
                 .catch(() => console.log("Игра работает в standalone режиме"));
         }
+        
+        // ========== ОСНОВНЫЕ ПЕРЕМЕННЫЕ ==========
+        let imagesLoaded = false;
+        let audioInitialized = false;
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ СТАРТОВОГО ЭКРАНА ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем личный рекорд
+            const highScore = localStorage.getItem('seafood_highscore') || 0;
+            document.getElementById('startHighScore').textContent = highScore;
+            
+            // Инициализируем кнопку
+            const startButton = document.getElementById('startButton');
+            const startScreen = document.getElementById('startScreen');
+            const gameContainer = document.getElementById('gameContainer');
+            
+            // Предзагрузка ресурсов в фоне
+            preloadResources();
+            
+            startButton.addEventListener('click', function() {
+                // Анимация нажатия кнопки
+                this.style.transform = 'scale(0.95)';
+                this.style.opacity = '0.8';
+                
+                // Запускаем плавный переход
+                startScreen.classList.add('hiding');
+                
+                // Показываем игровой интерфейс через небольшой таймаут
+                setTimeout(() => {
+                    startScreen.style.display = 'none';
+                    gameContainer.classList.add('show');
+                    
+                    // Инициализируем игру
+                    initializeGame();
+                }, 800);
+            });
+            
+            // Добавляем анимацию пульсации для кнопки
+            setInterval(() => {
+                startButton.querySelector('.pulse').style.animation = 'none';
+                setTimeout(() => {
+                    startButton.querySelector('.pulse').style.animation = 'pulse 2s infinite';
+                }, 10);
+            }, 2000);
+        });
+        
+        // ========== ПРЕДЗАГРУЗКА РЕСУРСОВ ==========
+        function preloadResources() {
+            const images = [
+                'ship5.png',
+                'fish1.png',
+                'fish2.png',
+                'fish3.png',
+                'fish4.png',
+                'fish5.png',
+                'fish6.png'
+            ];
+            
+            let loaded = 0;
+            const total = images.length;
+            
+            images.forEach(src => {
+                const img = new Image();
+                img.onload = function() {
+                    loaded++;
+                    if (loaded === total) {
+                        imagesLoaded = true;
+                        console.log('Все изображения загружены');
+                    }
+                };
+                img.onerror = function() {
+                    console.warn('Не удалось загрузить изображение:', src);
+                    loaded++;
+                };
+                img.src = src;
+            });
+        }
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ ИГРЫ ==========
+        function initializeGame() {
+            // Инициализируем аудио при первом запуске
+            if (!audioInitialized) {
+                AudioManager.init();
+                audioInitialized = true;
+            }
+            
+            // Инициализируем канвас
+            resizeCanvas();
+            
+            // Запускаем игру
+            initGame();
+            
+            // Показываем приветственное сообщение
+            setTimeout(() => {
+                showNotification('Удачи в ловле!', 'Ловите рыбу, получайте скидки!');
+            }, 1000);
+        }
+        
         // ========== ДЕТЕКТОР УСТРОЙСТВ И ПЛОТНОСТИ ПИКСЕЛЕЙ ==========
         const DeviceDetector = {
             isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
@@ -769,7 +1125,6 @@
                 console.log(`Устройство: ${this.isMobile ? 'Мобильное' : this.isTablet ? 'Планшет' : 'ПК'}`);
                 console.log(`Плотность пикселей: ${this.pixelRatio}x`);
                 console.log(`ВК приложение: ${this.isVKApp ? 'Да' : 'Нет'}`);
-                // Устанавливаем классы для body для кастомизации
                 if (this.isMobile) {
                     document.body.classList.add('is-mobile');
                     if (this.isVKApp) {
@@ -782,15 +1137,13 @@
             }
         };
         DeviceDetector.init();
+        
         // ========== БЛОК ИНИЦИАЛИЗАЦИИ АУДИО ==========
         const AudioManager = {
             backgroundMusic: null,
             sounds: {},
             init: function() {
-                // Создаем фоновую музыку (океанские волны + спокойная мелодия)
-                this.backgroundMusic = new Audio();
                 this.createBackgroundMusic();
-                // Создаем звуковые эффекты
                 this.createSoundEffects();
             },
             createBackgroundMusic: function() {
@@ -852,50 +1205,42 @@
                 this.sounds[soundName].play();
             }
         };
-        // ========== СОЗДАНИЕ ПУЗЫРЬКОВ ФОНА - ОБНОВЛЕНО (убрано, но оставлено для совместимости) ==========
-        function createBubbles() {
-            const bubbleBg = document.getElementById('bubbleBg');
-            // Убираем создание пузырьков, так как фон теперь видео
-            // Но оставляем эту функцию, чтобы не было ошибок
-            console.log('Функция createBubbles вызвана, но не выполняется (фон видео)');
-        }
-        // ========== ИНИЦИАЛИЗАЦИЯ КАНВАСА С ПОДДЕРЖКОЙ HIGH-DPI ==========
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ КАНВАСА ==========
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        // Переменные для управления размером канваса
         let canvasWidth = 0;
         let canvasHeight = 0;
         let pixelRatio = DeviceDetector.pixelRatio;
-        // ✅ ОБНОВЛЕННАЯ функция resizeCanvas с поддержкой devicePixelRatio
+        
         function resizeCanvas() {
             const container = canvas.parentElement;
             const displayWidth = container.clientWidth;
             const displayHeight = container.clientHeight;
-            // Определяем pixelRatio в зависимости от устройства
+            
             pixelRatio = DeviceDetector.pixelRatio;
-            // Для мобильных устройств ограничиваем pixelRatio для производительности
             if (DeviceDetector.isMobile) {
                 pixelRatio = Math.min(pixelRatio, 2);
             }
-            // Устанавливаем внутренний размер канваса
+            
             canvas.width = displayWidth * pixelRatio;
             canvas.height = displayHeight * pixelRatio;
-            // Устанавливаем CSS размер
             canvas.style.width = displayWidth + 'px';
             canvas.style.height = displayHeight + 'px';
-            // Сохраняем размеры для использования в игре
+            
             canvasWidth = displayWidth;
             canvasHeight = displayHeight;
-            // Настраиваем сглаживание
+            
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
             console.log(`Canvas: ${canvas.width}x${canvas.height} (pixelRatio: ${pixelRatio})`);
         }
-        // Обработчики изменения размера
+        
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('orientationchange', function() {
             setTimeout(resizeCanvas, 100);
         });
+        
         // ========== КОНСТАНТЫ ИГРЫ ==========
         const Game = {
             score: 0,
@@ -917,11 +1262,9 @@
             highScore: localStorage.getItem('seafood_highscore') || 0,
             waveOffset: 0,
             waveSpeed: 0.02,
-            waveTime: 0,
-            imagesLoaded: 0,
-            totalImages: 7 // 6 рыб + корабль
+            waveTime: 0
         };
-        // Размеры корабля (в логических единицах, не зависящих от pixelRatio)
+        
         const Ship = {
             x: 0,
             y: 0,
@@ -935,6 +1278,7 @@
             waveHeight: 12,
             waveFrequency: 0.05
         };
+        
         // ========== ТИПЫ ПРЕДМЕТОВ С ИЗОБРАЖЕНИЯМИ ==========
         const ItemTypes = [
             { 
@@ -1002,54 +1346,28 @@
                 imageObj: null,
                 width: 40,
                 height: 40
-            },
-            { 
-                name: 'Паразиты', 
-                points: -20, 
-                color: '#607D8B', 
-                type: 'bad',
-                image: 'fish6.png',
-                emoji: '☠️',
-                imageObj: null,
-                width: 40,
-                height: 40
-            },
+            }
         ];
+        
         // ========== ЗАГРУЗКА ИЗОБРАЖЕНИЙ ==========
         let shipImage = null;
-        let imagesLoadedCount = 0;
+        
         function loadImages() {
-            const loadingProgress = document.getElementById('loadingProgress');
             // Загружаем корабль
             shipImage = new Image();
-            shipImage.onload = () => {
-                imagesLoadedCount++;
-                loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
-                if (imagesLoadedCount === Game.totalImages) {
-                    setTimeout(() => {
-                        document.getElementById('loadingScreen').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('loadingScreen').style.display = 'none';
-                            initGame();
-                        }, 500);
-                    }, 500);
-                }
+            shipImage.onload = function() {
+                console.log('Корабль загружен');
             };
-            shipImage.onerror = () => {
+            shipImage.onerror = function() {
                 console.error("Ошибка загрузки корабля");
-                // Создаем простой корабль на случай ошибки
                 shipImage = createFallbackShip();
-                imagesLoadedCount++;
-                loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
             };
             shipImage.src = 'ship5.png';
+            
             // Загружаем изображения рыб
             ItemTypes.forEach((item, index) => {
                 item.imageObj = new Image();
-                item.imageObj.onload = () => {
-                    imagesLoadedCount++;
-                    loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
-                    // Устанавливаем размеры в зависимости от пропорций изображения
+                item.imageObj.onload = function() {
                     const aspectRatio = item.imageObj.width / item.imageObj.height;
                     if (aspectRatio > 1) {
                         item.width = 50;
@@ -1058,32 +1376,20 @@
                         item.height = 40;
                         item.width = 40 * aspectRatio;
                     }
-                    if (imagesLoadedCount === Game.totalImages) {
-                        setTimeout(() => {
-                            document.getElementById('loadingScreen').style.opacity = '0';
-                            setTimeout(() => {
-                                document.getElementById('loadingScreen').style.display = 'none';
-                                initGame();
-                            }, 500);
-                        }, 500);
-                    }
                 };
-                item.imageObj.onerror = () => {
+                item.imageObj.onerror = function() {
                     console.error(`Ошибка загрузки изображения: ${item.image}`);
-                    // Используем fallback
-                    imagesLoadedCount++;
-                    loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
                 };
                 item.imageObj.src = item.image;
             });
         }
+        
         // Создание простого корабля на случай ошибки загрузки
         function createFallbackShip() {
             const canvas = document.createElement('canvas');
             canvas.width = 80;
             canvas.height = 60;
             const ctx = canvas.getContext('2d');
-            // Корпус корабля
             ctx.fillStyle = '#8B4513';
             ctx.beginPath();
             ctx.moveTo(10, 30);
@@ -1092,25 +1398,24 @@
             ctx.lineTo(20, 50);
             ctx.closePath();
             ctx.fill();
-            // Палуба
+            
             ctx.fillStyle = '#A0522D';
             ctx.fillRect(15, 20, 50, 10);
-            // Кабина
             ctx.fillStyle = '#CD853F';
             ctx.fillRect(30, 10, 20, 10);
-            // Труба
             ctx.fillStyle = '#696969';
             ctx.fillRect(45, 5, 8, 5);
-            // Окно
             ctx.fillStyle = '#87CEEB';
             ctx.fillRect(35, 15, 10, 5);
+            
             const img = new Image();
             img.src = canvas.toDataURL();
             return img;
         }
+        
         // ========== ИНИЦИАЛИЗАЦИЯ ИГРЫ ==========
         function initGame() {
-            resizeCanvas(); // Важно: пересчитываем размеры канваса
+            resizeCanvas();
             Game.score = 0;
             Game.level = 1;
             Game.time = 0;
@@ -1125,26 +1430,31 @@
             Game.shipSinking = false;
             Game.waveOffset = 0;
             Game.waveTime = 0;
+            
             Ship.x = canvasWidth / 2 - Ship.width / 2;
             Ship.baseY = canvasHeight - Ship.height - 15;
             Ship.y = Ship.baseY;
             Ship.tilt = 0;
             Ship.tiltSpeed = 0;
             Ship.alpha = 1;
+            
             updateUI();
             document.getElementById('pauseScreen').style.display = 'none';
             document.getElementById('playBtn').innerHTML = '<i class="fas fa-redo"></i> ЗАНОВО';
             document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> ПАУЗА';
+            
             AudioManager.playBackgroundMusic();
+            
             for (let i = 0; i < 3; i++) {
                 setTimeout(() => spawnItem(), i * 500);
             }
-            // Запускаем игровой цикл
+            
             if (!Game.gameLoopStarted) {
                 Game.gameLoopStarted = true;
                 gameLoop();
             }
         }
+        
         // ========== СОЗДАНИЕ ПРЕДМЕТОВ ==========
         function spawnItem() {
             if (!Game.running || Game.paused || Game.shipSinking) return;
@@ -1165,6 +1475,7 @@
             };
             Game.items.push(item);
         }
+        
         // ========== СОЗДАНИЕ ЧАСТИЦ ==========
         function createParticles(x, y, color, count = 6) {
             for (let i = 0; i < count; i++) {
@@ -1179,6 +1490,7 @@
                 });
             }
         }
+        
         // ========== ОБНОВЛЕНИЕ ВОЛН ==========
         function updateWaves(deltaTime) {
             Game.waveOffset += Game.waveSpeed * deltaTime * 60;
@@ -1188,46 +1500,47 @@
             const waveSlope = Math.cos(Game.waveOffset + Ship.x * Ship.waveFrequency) * 0.05;
             Ship.tilt = waveSlope * 0.5;
         }
+        
         // ========== ОТРИСОВКА КОРАБЛИКА ==========
         function drawShip() {
             if (!shipImage || Ship.alpha <= 0) return;
             ctx.save();
             ctx.globalAlpha = Ship.alpha;
-            // Преобразуем координаты с учетом pixelRatio
             const shipX = Ship.x * pixelRatio;
             const shipY = Ship.y * pixelRatio;
             const shipWidth = Ship.width * pixelRatio;
             const shipHeight = Ship.height * pixelRatio;
+            
             ctx.translate(shipX + shipWidth / 2, shipY + shipHeight / 2);
             ctx.rotate(Ship.tilt);
-            // Добавляем тень для корабля
+            
             ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = 10 * pixelRatio;
             ctx.shadowOffsetX = 2 * pixelRatio;
             ctx.shadowOffsetY = 2 * pixelRatio;
-            // Рисуем корабль
+            
             if (shipImage.complete) {
                 ctx.drawImage(shipImage, -shipWidth / 2, -shipHeight / 2, shipWidth, shipHeight);
             }
-            // Сбрасываем тень
+            
             ctx.shadowColor = 'transparent';
             ctx.shadowBlur = 0;
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             ctx.restore();
         }
+        
         // ========== ОТРИСОВКА ПРЕДМЕТОВ С ИЗОБРАЖЕНИЯМИ ==========
         function drawItems() {
             Game.items.forEach(item => {
                 ctx.save();
-                // Волновое движение
                 const itemWave = Math.sin(Game.waveOffset + item.x * 0.01 + item.waveOffset) * 4;
-                // Позиция с учетом волны и pixelRatio
                 const xPos = item.x * pixelRatio + (item.width * pixelRatio) / 2;
                 const yPos = (item.y + itemWave) * pixelRatio + (item.height * pixelRatio) / 2;
+                
                 ctx.translate(xPos, yPos);
                 ctx.rotate(item.rotation);
-                // Анимация появления (увеличение масштаба)
+                
                 if (!item.fullyScaled && item.scale < 1) {
                     item.scale += item.scaleSpeed * 0.016 * 60;
                     if (item.scale >= 1) {
@@ -1236,7 +1549,7 @@
                     }
                 }
                 ctx.scale(item.scale, item.scale);
-                // Добавляем свечение для предметов
+                
                 if (item.type.type === 'good') {
                     ctx.shadowColor = item.type.color;
                     ctx.shadowBlur = 15 * pixelRatio;
@@ -1244,7 +1557,7 @@
                     ctx.shadowColor = '#ff0000';
                     ctx.shadowBlur = 10 * pixelRatio;
                 }
-                // Рисуем изображение, если оно загружено
+                
                 if (item.type.imageObj && item.type.imageObj.complete) {
                     const itemWidth = item.width * pixelRatio;
                     const itemHeight = item.height * pixelRatio;
@@ -1256,21 +1569,21 @@
                         itemHeight
                     );
                 } else {
-                    // Fallback на эмодзи
                     ctx.font = `${28 * pixelRatio}px Arial`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(item.type.emoji, 0, 0);
                 }
-                // Сбрасываем тень
+                
                 ctx.shadowColor = 'transparent';
                 ctx.shadowBlur = 0;
                 ctx.restore();
-                // Обновляем вращение и волну
+                
                 item.rotation += item.rotationSpeed;
                 item.waveOffset += 0.01;
             });
         }
+        
         // ========== ОТРИСОВКА ЧАСТИЦ ==========
         function drawParticles() {
             for (let i = Game.particles.length - 1; i >= 0; i--) {
@@ -1290,11 +1603,13 @@
             }
             ctx.globalAlpha = 1;
         }
+        
         // ========== ОБНОВЛЕНИЕ ИГРЫ ==========
         function updateGame(deltaTime) {
             if (!Game.running || Game.paused) return;
             Game.time += deltaTime;
             updateWaves(deltaTime);
+            
             if (Game.shipSinking) {
                 Ship.y += 1.5;
                 Ship.alpha -= 0.02;
@@ -1303,18 +1618,22 @@
                 }
                 return;
             }
+            
             const now = Date.now();
             if (now - Game.lastSpawn > Game.spawnRate) {
                 spawnItem();
                 Game.lastSpawn = now;
                 Game.spawnRate = Math.max(500, 1500 - Game.level * 100);
             }
+            
             updateShipPosition();
+            
             for (let i = Game.items.length - 1; i >= 0; i--) {
                 const item = Game.items[i];
                 item.y += item.speed;
                 const shipWaveOffset = Math.sin(Game.waveOffset + Ship.x * Ship.waveFrequency) * Ship.waveHeight;
                 const effectiveShipY = Ship.baseY + shipWaveOffset;
+                
                 if (item.y + item.height > effectiveShipY &&
                     item.x + item.width > Ship.x &&
                     item.x < Ship.x + Ship.width &&
@@ -1324,12 +1643,15 @@
                     const color = item.type.type === 'good' ? '#00ff88' : '#ff4444';
                     createParticles(item.x + item.width / 2, item.y + item.height / 2, color, 8);
                     Ship.tilt += item.type.points > 0 ? 0.08 : -0.08;
+                    
                     if (item.type.type === 'good') {
                         AudioManager.playSound('goodCatch');
                     } else {
                         AudioManager.playSound('badCatch');
                     }
+                    
                     showCatchEffect(item);
+                    
                     if (item.type.type === 'bad') {
                         Game.health--;
                         showNotification('Попадание!', `Осталось жизней: ${Game.health}/5`);
@@ -1339,6 +1661,7 @@
                             continue;
                         }
                     }
+                    
                     if (item.type.type === 'good' && Game.caught % 10 === 0) {
                         Game.level++;
                         Game.speed += 0.4;
@@ -1346,16 +1669,20 @@
                         AudioManager.playSound('levelUp');
                         showLevelUp();
                     }
+                    
                     Game.items.splice(i, 1);
                     animateScore();
                     continue;
                 }
+                
                 if (item.y > canvasHeight + 40) {
                     Game.items.splice(i, 1);
                 }
             }
+            
             updateUI();
         }
+        
         // ========== ПОТОПЛЕНИЕ КОРАБЛЯ ==========
         function sinkShip() {
             Game.shipSinking = true;
@@ -1372,12 +1699,15 @@
                 showNotification('Корабль потоплен!', 'Начните новую игру');
             }, 500);
         }
+        
         // ========== КОНЕЦ ИГРЫ ==========
         function gameOver() {
             Game.running = false;
             AudioManager.stopBackgroundMusic();
             document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> НАЧАТЬ ИГРУ';
             document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> ПАУЗА';
+            
+            // Обновляем рекорд
             if (Game.score > Game.highScore) {
                 Game.highScore = Game.score;
                 localStorage.setItem('seafood_highscore', Game.score);
@@ -1386,17 +1716,15 @@
                 showNotification('Игра окончена!', `Ваш счет: ${Game.score} очков`);
             }
         }
+        
         // ========== ОТРИСОВКА ==========
         function draw() {
-            // Очищаем канвас
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Не рисуем фон, он теперь видео
-            // Градиентный фон и пузырьки удалены
-            // Отрисовка объектов
             drawItems();
             drawShip();
             drawParticles();
         }
+        
         // ========== ИГРОВОЙ ЦИКЛ ==========
         function gameLoop(timestamp) {
             if (!Game.lastTime) Game.lastTime = timestamp;
@@ -1406,6 +1734,7 @@
             draw();
             requestAnimationFrame(gameLoop);
         }
+        
         // ========== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ==========
         function updateUI() {
             document.getElementById('score').textContent = Game.score;
@@ -1422,6 +1751,7 @@
             document.getElementById('shopScore').textContent = Game.score;
             updateShopButtons();
         }
+        
         // ========== УПРАВЛЕНИЕ КОРАБЛЕМ ==========
         function updateShipPosition() {
             if (Game.shipSinking) return;
@@ -1433,11 +1763,12 @@
                 Ship.x += speed;
                 Ship.tilt = 0.08;
             }
+            
             if (Ship.x < 0) Ship.x = 0;
             if (Ship.x > canvasWidth - Ship.width) {
                 Ship.x = canvasWidth - Ship.width;
             }
-            // Для мобильных устройств
+            
             if (Game.touch && Game.touch.active) {
                 const targetX = Game.touch.x - Ship.width / 2;
                 const diff = targetX - Ship.x;
@@ -1449,12 +1780,14 @@
                 }
             }
         }
+        
         // ========== АНИМАЦИИ И ЭФФЕКТЫ ==========
         function animateScore() {
             const scoreElement = document.getElementById('score');
             scoreElement.classList.add('changed');
             setTimeout(() => scoreElement.classList.remove('changed'), 400);
         }
+        
         function showCatchEffect(item) {
             const effect = document.createElement('div');
             effect.className = 'catch-effect';
@@ -1465,9 +1798,11 @@
             document.body.appendChild(effect);
             setTimeout(() => effect.remove(), 800);
         }
+        
         function showLevelUp() {
             showNotification('Уровень повышен!', `Теперь вы на уровне ${Game.level}!`);
         }
+        
         function showNotification(title, message) {
             const notification = document.createElement('div');
             notification.className = 'notification';
@@ -1483,6 +1818,7 @@
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 2500);
         }
+        
         // ========== УПРАВЛЕНИЕ КНОПКАМИ ==========
         document.getElementById('playBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
@@ -1492,6 +1828,7 @@
                 initGame();
             }
         });
+        
         document.getElementById('pauseBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             if (!Game.running) return;
@@ -1501,6 +1838,7 @@
                 '<i class="fas fa-play"></i> ПРОДОЛЖИТЬ' : 
                 '<i class="fas fa-pause"></i> ПАУЗА';
         });
+        
         document.getElementById('soundBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             Game.soundOn = !Game.soundOn;
@@ -1513,14 +1851,17 @@
                 AudioManager.stopBackgroundMusic();
             }
         });
+        
         document.getElementById('shopBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             document.getElementById('shopModal').style.display = 'flex';
         });
+        
         document.getElementById('closeShop').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             document.getElementById('shopModal').style.display = 'none';
         });
+        
         // ========== МАГАЗИН ==========
         function updateShopButtons() {
             document.querySelectorAll('.buy-btn').forEach(btn => {
@@ -1529,6 +1870,7 @@
                 btn.style.opacity = Game.score < price ? '0.5' : '1';
             });
         }
+        
         document.querySelectorAll('.buy-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 AudioManager.playSound('buttonClick');
@@ -1538,6 +1880,7 @@
                 buyItem(price, promo, name);
             });
         });
+        
         function buyItem(price, promoCode, itemName) {
             if (Game.score < price) {
                 showNotification('Недостаточно очков', `Нужно ещё ${price - Game.score} ⭐`);
@@ -1565,6 +1908,7 @@
                 showPurchaseSuccess(promoCode, itemName);
             }
         }
+        
         function showPurchaseSuccess(promoCode, itemName) {
             showNotification('Скидка получена!', `Промокод: ${promoCode}`);
             const purchases = JSON.parse(localStorage.getItem('seafood_purchases') || '[]');
@@ -1578,6 +1922,7 @@
                 document.getElementById('shopModal').style.display = 'none';
             }, 2000);
         }
+        
         // ========== УПРАВЛЕНИЕ ==========
         document.addEventListener('keydown', (e) => {
             Game.keys[e.key] = true;
@@ -1586,9 +1931,11 @@
                 document.getElementById('pauseBtn').click();
             }
         });
+        
         document.addEventListener('keyup', (e) => {
             Game.keys[e.key] = false;
         });
+        
         // Управление для мобильных устройств
         Game.touch = { active: false, x: 0 };
         canvas.addEventListener('touchstart', (e) => {
@@ -1598,15 +1945,18 @@
             Game.touch.active = true;
             Game.touch.x = (e.touches[0].clientX - rect.left) * scaleX / pixelRatio;
         });
+        
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             Game.touch.x = (e.touches[0].clientX - rect.left) * scaleX / pixelRatio;
         });
+        
         canvas.addEventListener('touchend', () => {
             Game.touch.active = false;
         });
+        
         // Управление мышью для ПК
         canvas.addEventListener('mousemove', (e) => {
             if (!Game.running || Game.paused || Game.shipSinking) return;
@@ -1622,20 +1972,19 @@
                 Ship.x = canvasWidth - Ship.width;
             }
         });
+        
         // ========== ЗАПУСК ИГРЫ ==========
-        AudioManager.init();
-        // createBubbles(); // Убрано, так как фон теперь видео
-        resizeCanvas(); // Инициализируем размер канваса
-        loadImages(); // Загружаем изображения
+        loadImages();
+        
         if (!localStorage.getItem('seafood_instructions')) {
             setTimeout(() => {
-                showNotification('Добро пожаловать!', 'Ловите рыбу, избегайте опасностей!');
                 localStorage.setItem('seafood_instructions', 'true');
             }, 1000);
         }
     </script>
 </body>
 </html>
+
 
 
 
