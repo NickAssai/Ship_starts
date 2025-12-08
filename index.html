@@ -464,90 +464,6 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
         }
-        /* Модальное окно рейтинга */
-        .rating-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-        }
-        .rating-card {
-            background: linear-gradient(135deg, var(--storm-blue), var(--navy-dark));
-            border-radius: 20px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            border: 2px solid var(--aurora-teal);
-            box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
-            position: relative;
-            animation: pop 0.4s;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-        .rating-item {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 12px;
-            margin: 8px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            transition: all 0.3s;
-        }
-        .rating-item.current-user {
-            background: rgba(0, 212, 255, 0.15);
-            border-color: var(--aurora-teal);
-        }
-        .rating-rank {
-            font-size: 1.2em;
-            font-weight: 800;
-            color: var(--aurora-teal);
-            width: 40px;
-            text-align: center;
-        }
-        .rating-info {
-            flex-grow: 1;
-            margin: 0 15px;
-        }
-        .rating-name {
-            font-weight: 700;
-            color: white;
-            font-size: 0.95em;
-        }
-        .rating-score {
-            font-size: 1.1em;
-            font-weight: 800;
-            color: var(--aurora-green);
-            text-shadow: 0 0 8px var(--aurora-green);
-            min-width: 80px;
-            text-align: right;
-        }
-        /* Индикатор комбо */
-        .combo-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5em;
-            font-weight: 800;
-            color: #FFD700;
-            text-shadow: 0 0 20px #FFD700, 0 0 30px #FFD700;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 50;
-            animation: comboPulse 0.5s ease-out;
-        }
-        @keyframes comboPulse {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-        }
         /* Адаптивность для БОЛЬШИХ экранов */
         @media (min-width: 768px) {
             .game-container {
@@ -729,16 +645,13 @@
         <div style="color: var(--aurora-teal); font-size: 1.2em; margin-top: 10px;">Загрузка изображений и музыки...</div>
         <div style="color: var(--text-muted); font-size: 0.9em; margin-top: 5px;" id="loadingProgress">0/8</div>
     </div>
-    
     <!-- Фоновое видео -->
     <video id="bgVideo" autoplay muted loop playsinline>
         <source src="fon.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
     </video>
-    
     <!-- Фон с пузырьками (убран, но оставлен для совместимости) -->
     <div class="bubble-bg" id="bubbleBg"></div>
-    
     <div class="game-container">
         <!-- Шапка игры - КОМПАКТНАЯ -->
         <header class="game-header">
@@ -746,7 +659,6 @@
             <div class="game-subtitle">СВЕЖИЕ МОРЕПРОДУКТЫ | СЕВЕРОДВИНСК</div>
             <div class="game-slogan">Лови рыбу • Получай скидки • Заказывай в БУХТЕ</div>
         </header>
-        
         <!-- Статистика - КОМПАКТНАЯ -->
         <div class="stats-grid">
             <div>
@@ -758,15 +670,14 @@
                 <div class="stat-value" id="level">1</div>
             </div>
             <div>
-                <div class="stat-label">КОМБО</div>
-                <div class="stat-value" id="combo">x1</div>
+                <div class="stat-label">ВРЕМЯ</div>
+                <div class="stat-value" id="time">00:00</div>
             </div>
             <div>
                 <div class="stat-label">ПОЙМАНО</div>
                 <div class="stat-value" id="caught">0</div>
             </div>
         </div>
-        
         <!-- Прогресс уровня - КОМПАКТНЫЙ -->
         <div class="progress-container">
             <div class="progress-label">
@@ -777,7 +688,6 @@
                 <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
-        
         <!-- Игровая зона -->
         <div class="game-area">
             <canvas id="gameCanvas"></canvas>
@@ -788,7 +698,6 @@
                 </div>
             </div>
         </div>
-        
         <!-- Управление - КОМПАКТНОЕ -->
         <div class="controls">
             <button class="control-btn" id="playBtn">
@@ -800,17 +709,15 @@
             <button class="control-btn" id="shopBtn">
                 <i class="fas fa-store"></i> МАГАЗИН
             </button>
-            <button class="control-btn" id="ratingBtn">
-                <i class="fas fa-trophy"></i> РЕЙТИНГ
+            <button class="control-btn" id="soundBtn">
+                <i class="fas fa-volume-up"></i>
             </button>
         </div>
-        
         <!-- Футер - КОМПАКТНЫЙ -->
         <footer class="game-footer">
             <p>Свежие морепродукты в БУХТЕ • Доставка по городу • Северодвинск</p>
         </footer>
     </div>
-    
     <!-- Модальное окно магазина -->
     <div class="shop-modal" id="shopModal">
         <div class="shop-card">
@@ -844,24 +751,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Модальное окно рейтинга -->
-    <div class="rating-modal" id="ratingModal">
-        <div class="rating-card">
-            <div class="close-btn" id="closeRating">×</div>
-            <h2 style="text-align:center;background:linear-gradient(90deg,var(--aurora-teal),var(--aurora-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:15px;font-size:1.3em">
-                <i class="fas fa-trophy"></i> РЕЙТИНГ ИГРОКОВ
-            </h2>
-            <p style="text-align:center;margin:15px 0;font-size:1em">
-                Топ 10 игроков
-            </p>
-            <div id="ratingList"></div>
-            <div style="text-align:center;margin-top:15px;color:var(--text-muted);font-size:0.8em;">
-                Обновляется после каждой игры
-            </div>
-        </div>
-    </div>
-    
     <script>
         // ========== ИНИЦИАЛИЗАЦИЯ VK ==========
         if (typeof vkBridge !== 'undefined') {
@@ -869,7 +758,6 @@
                 .then(() => console.log("VK Mini App инициализирован"))
                 .catch(() => console.log("Игра работает в standalone режиме"));
         }
-        
         // ========== ДЕТЕКТОР УСТРОЙСТВ И ПЛОТНОСТИ ПИКСЕЛЕЙ ==========
         const DeviceDetector = {
             isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
@@ -893,7 +781,6 @@
             }
         };
         DeviceDetector.init();
-        
         // ========== БЛОК ИНИЦИАЛИЗАЦИИ АУДИО ==========
         const AudioManager = {
             backgroundMusic: null,
@@ -954,8 +841,7 @@
                     levelUp: this.createBeepSound(1200, 0.3, 0.4),
                     shipSink: this.createBeepSound(150, 1.5, 0.5),
                     purchase: this.createBeepSound(1000, 0.2, 0.3),
-                    buttonClick: this.createBeepSound(600, 0.05, 0.2),
-                    combo: this.createBeepSound(1000, 0.3, 0.4)
+                    buttonClick: this.createBeepSound(600, 0.05, 0.2)
                 };
             },
             createBeepSound: function(frequency, duration, volume) {
@@ -1007,7 +893,13 @@
                 this.sounds[soundName].play();
             }
         };
-        
+        // ========== СОЗДАНИЕ ПУЗЫРЬКОВ ФОНА - ОБНОВЛЕНО (убрано, но оставлено для совместимости) ==========
+        function createBubbles() {
+            const bubbleBg = document.getElementById('bubbleBg');
+            // Убираем создание пузырьков, так как фон теперь видео
+            // Но оставляем эту функцию, чтобы не было ошибок
+            console.log('Функция createBubbles вызвана, но не выполняется (фон видео)');
+        }
         // ========== ИНИЦИАЛИЗАЦИЯ КАНВАСА С ПОДДЕРЖКОЙ HIGH-DPI ==========
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -1015,7 +907,6 @@
         let canvasWidth = 0;
         let canvasHeight = 0;
         let pixelRatio = DeviceDetector.pixelRatio;
-        
         // ✅ ОБНОВЛЕННАЯ функция resizeCanvas с поддержкой devicePixelRatio
         function resizeCanvas() {
             const container = canvas.parentElement;
@@ -1041,13 +932,11 @@
             ctx.imageSmoothingQuality = 'high';
             console.log(`Canvas: ${canvas.width}x${canvas.height} (pixelRatio: ${pixelRatio})`);
         }
-        
         // Обработчики изменения размера
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('orientationchange', function() {
             setTimeout(resizeCanvas, 100);
         });
-        
         // ========== КОНСТАНТЫ ИГРЫ ==========
         const Game = {
             score: 0,
@@ -1060,7 +949,6 @@
             speed: 2,
             items: [],
             particles: [],
-            ambientParticles: [], // Новые частицы для визуальных эффектов
             lastSpawn: 0,
             spawnRate: 1500,
             lastTime: 0,
@@ -1072,26 +960,8 @@
             waveSpeed: 0.02,
             waveTime: 0,
             imagesLoaded: 0,
-            totalImages: 8, // 6 рыб + корабль + музыка
-            
-            // Комбо-система
-            combo: 0,
-            comboMultiplier: 1,
-            lastCatchTime: 0,
-            comboTimeout: 2000, // 2 секунды для комбо
-            maxComboMultiplier: 5,
-            
-            // Динамическая сложность
-            baseSpeed: 2,
-            baseSpawnRate: 1500,
-            difficultyAdjustmentInterval: 30000, // Каждые 30 секунд
-            lastDifficultyAdjustment: 0,
-            
-            // Рейтинг
-            playerName: localStorage.getItem('playerName') || 'Игрок',
-            rating: JSON.parse(localStorage.getItem('seafood_rating') || '[]')
+            totalImages: 8 // 6 рыб + корабль + музыка
         };
-        
         // Размеры корабля (в логических единицах, не зависящих от pixelRatio)
         const Ship = {
             x: 0,
@@ -1106,7 +976,6 @@
             waveHeight: 12,
             waveFrequency: 0.05
         };
-        
         // ========== ТИПЫ ПРЕДМЕТОВ С ИЗОБРАЖЕНИЯМИ ==========
         const ItemTypes = [
             { 
@@ -1174,9 +1043,19 @@
                 imageObj: null,
                 width: 40,
                 height: 40
-            }
+            },
+            { 
+                name: 'Паразиты', 
+                points: -20, 
+                color: '#607D8B', 
+                type: 'bad',
+                image: 'fish6.png',
+                emoji: '☠️',
+                imageObj: null,
+                width: 40,
+                height: 40
+            },
         ];
-        
         // ========== ЗАГРУЗКА ИЗОБРАЖЕНИЙ И МУЗЫКИ ==========
         let shipImage = null;
         let imagesLoadedCount = 0;
@@ -1311,7 +1190,6 @@
             img.src = canvas.toDataURL();
             return img;
         }
-        
         // ========== ИНИЦИАЛИЗАЦИЯ ИГРЫ ==========
         function initGame() {
             resizeCanvas(); // Важно: пересчитываем размеры канваса
@@ -1322,54 +1200,34 @@
             Game.running = true;
             Game.paused = false;
             Game.soundOn = true;
-            Game.speed = Game.baseSpeed;
+            Game.speed = 2;
             Game.items = [];
             Game.particles = [];
-            Game.ambientParticles = [];
             Game.lastSpawn = Date.now();
             Game.health = 5;
             Game.shipSinking = false;
             Game.waveOffset = 0;
             Game.waveTime = 0;
-            
-            // Комбо-система
-            Game.combo = 0;
-            Game.comboMultiplier = 1;
-            Game.lastCatchTime = 0;
-            
-            // Динамическая сложность
-            Game.lastDifficultyAdjustment = Date.now();
-            Game.spawnRate = Game.baseSpawnRate;
-            
             Ship.x = canvasWidth / 2 - Ship.width / 2;
             Ship.baseY = canvasHeight - Ship.height - 15;
             Ship.y = Ship.baseY;
             Ship.tilt = 0;
             Ship.tiltSpeed = 0;
             Ship.alpha = 1;
-            
             updateUI();
             document.getElementById('pauseScreen').style.display = 'none';
             document.getElementById('playBtn').innerHTML = '<i class="fas fa-redo"></i> ЗАНОВО';
             document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> ПАУЗА';
             AudioManager.playBackgroundMusic();
-            
             for (let i = 0; i < 3; i++) {
                 setTimeout(() => spawnItem(), i * 500);
             }
-            
-            // Создаем начальные фоновые частицы
-            for (let i = 0; i < 20; i++) {
-                createAmbientParticle();
-            }
-            
             // Запускаем игровой цикл
             if (!Game.gameLoopStarted) {
                 Game.gameLoopStarted = true;
                 gameLoop();
             }
         }
-        
         // ========== СОЗДАНИЕ ПРЕДМЕТОВ ==========
         function spawnItem() {
             if (!Game.running || Game.paused || Game.shipSinking) return;
@@ -1390,7 +1248,6 @@
             };
             Game.items.push(item);
         }
-        
         // ========== СОЗДАНИЕ ЧАСТИЦ ==========
         function createParticles(x, y, color, count = 6) {
             for (let i = 0; i < count; i++) {
@@ -1405,20 +1262,6 @@
                 });
             }
         }
-        
-        // ========== СОЗДАНИЕ ФОНОВЫХ ЧАСТИЦ ==========
-        function createAmbientParticle() {
-            Game.ambientParticles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                vx: Math.random() * 0.5 - 0.25,
-                vy: Math.random() * -0.5 - 0.1,
-                life: Math.random() * 0.5 + 0.5,
-                color: `rgba(0, 212, 255, ${Math.random() * 0.3 + 0.1})`,
-                size: Math.random() * 3 + 1
-            });
-        }
-        
         // ========== ОБНОВЛЕНИЕ ВОЛН ==========
         function updateWaves(deltaTime) {
             Game.waveOffset += Game.waveSpeed * deltaTime * 60;
@@ -1428,7 +1271,6 @@
             const waveSlope = Math.cos(Game.waveOffset + Ship.x * Ship.waveFrequency) * 0.05;
             Ship.tilt = waveSlope * 0.5;
         }
-        
         // ========== ОТРИСОВКА КОРАБЛИКА ==========
         function drawShip() {
             if (!shipImage || Ship.alpha <= 0) return;
@@ -1457,7 +1299,6 @@
             ctx.shadowOffsetY = 0;
             ctx.restore();
         }
-        
         // ========== ОТРИСОВКА ПРЕДМЕТОВ С ИЗОБРАЖЕНИЯМИ ==========
         function drawItems() {
             Game.items.forEach(item => {
@@ -1513,10 +1354,8 @@
                 item.waveOffset += 0.01;
             });
         }
-        
         // ========== ОТРИСОВКА ЧАСТИЦ ==========
         function drawParticles() {
-            // Рисуем обычные частицы
             for (let i = Game.particles.length - 1; i >= 0; i--) {
                 const p = Game.particles[i];
                 ctx.globalAlpha = p.life;
@@ -1532,82 +1371,13 @@
                     Game.particles.splice(i, 1);
                 }
             }
-            
-            // Рисуем фоновые частицы
-            for (let i = Game.ambientParticles.length - 1; i >= 0; i--) {
-                const p = Game.ambientParticles[i];
-                ctx.globalAlpha = p.life;
-                ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size * pixelRatio, 0, Math.PI * 2);
-                ctx.fill();
-                p.x += p.vx;
-                p.y += p.vy;
-                p.life -= 0.005;
-                if (p.life <= 0 || p.y < -10 || p.x < -10 || p.x > canvas.width + 10) {
-                    Game.ambientParticles.splice(i, 1);
-                    // Создаем новую частицу взамен удаленной
-                    if (Math.random() < 0.3) {
-                        createAmbientParticle();
-                    }
-                }
-            }
-            
             ctx.globalAlpha = 1;
         }
-        
-        // ========== ОБНОВЛЕНИЕ КОМБО ==========
-        function updateCombo() {
-            const now = Date.now();
-            if (now - Game.lastCatchTime > Game.comboTimeout) {
-                // Сброс комбо, если прошло слишком много времени
-                if (Game.combo > 1) {
-                    showNotification('Комбо потеряно!', `Было: x${Game.comboMultiplier}`);
-                }
-                Game.combo = 0;
-                Game.comboMultiplier = 1;
-                updateUI();
-            }
-        }
-        
-        // ========== ДИНАМИЧЕСКАЯ СЛОЖНОСТЬ ==========
-        function adjustDifficulty() {
-            const now = Date.now();
-            if (now - Game.lastDifficultyAdjustment > Game.difficultyAdjustmentInterval) {
-                Game.lastDifficultyAdjustment = now;
-                
-                // Основано на успехах игрока
-                const successRate = Game.caught / (Game.time || 1);
-                
-                if (successRate > 1.5) {
-                    // Игрок слишком успешен - увеличиваем сложность
-                    Game.speed += 0.1;
-                    Game.spawnRate = Math.max(300, Game.spawnRate - 50);
-                    showNotification('Сложность увеличена!', 'Игра становится сложнее');
-                } else if (successRate < 0.5) {
-                    // Игроку тяжело - уменьшаем сложность
-                    Game.speed = Math.max(Game.baseSpeed, Game.speed - 0.05);
-                    Game.spawnRate += 100;
-                    showNotification('Сложность уменьшена', 'Игра становится легче');
-                }
-                
-                console.log(`Динамическая сложность: скорость=${Game.speed.toFixed(2)}, спавн=${Game.spawnRate}`);
-            }
-        }
-        
         // ========== ОБНОВЛЕНИЕ ИГРЫ ==========
         function updateGame(deltaTime) {
             if (!Game.running || Game.paused) return;
-            
             Game.time += deltaTime;
             updateWaves(deltaTime);
-            
-            // Обновляем комбо
-            updateCombo();
-            
-            // Корректируем сложность
-            adjustDifficulty();
-            
             if (Game.shipSinking) {
                 Ship.y += 1.5;
                 Ship.alpha -= 0.02;
@@ -1616,75 +1386,33 @@
                 }
                 return;
             }
-            
-            // Создаем новые фоновые частицы
-            if (Math.random() < 0.02) {
-                createAmbientParticle();
-            }
-            
             const now = Date.now();
             if (now - Game.lastSpawn > Game.spawnRate) {
                 spawnItem();
                 Game.lastSpawn = now;
-                Game.spawnRate = Math.max(300, 1500 - Game.level * 100);
+                Game.spawnRate = Math.max(500, 1500 - Game.level * 100);
             }
-            
             updateShipPosition();
-            
             for (let i = Game.items.length - 1; i >= 0; i--) {
                 const item = Game.items[i];
                 item.y += item.speed;
                 const shipWaveOffset = Math.sin(Game.waveOffset + Ship.x * Ship.waveFrequency) * Ship.waveHeight;
                 const effectiveShipY = Ship.baseY + shipWaveOffset;
-                
                 if (item.y + item.height > effectiveShipY &&
                     item.x + item.width > Ship.x &&
                     item.x < Ship.x + Ship.width &&
                     item.y < effectiveShipY + Ship.height) {
-                    
-                    // Обработка комбо для хорошей рыбы
-                    if (item.type.type === 'good') {
-                        const now = Date.now();
-                        if (now - Game.lastCatchTime < Game.comboTimeout) {
-                            Game.combo++;
-                            if (Game.combo % 3 === 0 && Game.comboMultiplier < Game.maxComboMultiplier) {
-                                Game.comboMultiplier++;
-                                AudioManager.playSound('combo');
-                                showComboEffect();
-                                showNotification(`Комбо x${Game.comboMultiplier}!`, `Поймано подряд: ${Game.combo}`);
-                            }
-                        } else {
-                            Game.combo = 1;
-                            Game.comboMultiplier = 1;
-                        }
-                        Game.lastCatchTime = now;
-                        
-                        // Умножаем очки на комбо
-                        const bonusPoints = item.type.points * Game.comboMultiplier;
-                        Game.score += bonusPoints;
-                    } else {
-                        // Сброс комбо при ловле паразита
-                        if (Game.combo > 1) {
-                            showNotification('Комбо сброшено!', 'Пойман паразит');
-                        }
-                        Game.combo = 0;
-                        Game.comboMultiplier = 1;
-                        Game.score += item.type.points;
-                    }
-                    
+                    Game.score += item.type.points;
                     Game.caught++;
                     const color = item.type.type === 'good' ? '#00ff88' : '#ff4444';
                     createParticles(item.x + item.width / 2, item.y + item.height / 2, color, 8);
                     Ship.tilt += item.type.points > 0 ? 0.08 : -0.08;
-                    
                     if (item.type.type === 'good') {
                         AudioManager.playSound('goodCatch');
                     } else {
                         AudioManager.playSound('badCatch');
                     }
-                    
-                    showCatchEffect(item, Game.comboMultiplier);
-                    
+                    showCatchEffect(item);
                     if (item.type.type === 'bad') {
                         Game.health--;
                         showNotification('Попадание!', `Осталось жизней: ${Game.health}/5`);
@@ -1694,7 +1422,6 @@
                             continue;
                         }
                     }
-                    
                     if (item.type.type === 'good' && Game.caught % 10 === 0) {
                         Game.level++;
                         Game.speed += 0.4;
@@ -1702,21 +1429,16 @@
                         AudioManager.playSound('levelUp');
                         showLevelUp();
                     }
-                    
                     Game.items.splice(i, 1);
                     animateScore();
-                    updateUI();
                     continue;
                 }
-                
                 if (item.y > canvasHeight + 40) {
                     Game.items.splice(i, 1);
                 }
             }
-            
             updateUI();
         }
-        
         // ========== ПОТОПЛЕНИЕ КОРАБЛЯ ==========
         function sinkShip() {
             Game.shipSinking = true;
@@ -1733,17 +1455,12 @@
                 showNotification('Корабль потоплен!', 'Начните новую игру');
             }, 500);
         }
-        
         // ========== КОНЕЦ ИГРЫ ==========
         function gameOver() {
             Game.running = false;
             AudioManager.stopBackgroundMusic();
             document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> НАЧАТЬ ИГРУ';
             document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> ПАУЗА';
-            
-            // Обновляем рейтинг
-            updateRating();
-            
             if (Game.score > Game.highScore) {
                 Game.highScore = Game.score;
                 localStorage.setItem('seafood_highscore', Game.score);
@@ -1752,63 +1469,6 @@
                 showNotification('Игра окончена!', `Ваш счет: ${Game.score} очков`);
             }
         }
-        
-        // ========== ОБНОВЛЕНИЕ РЕЙТИНГА ==========
-        function updateRating() {
-            // Добавляем текущий результат в рейтинг
-            const playerEntry = {
-                name: Game.playerName,
-                score: Game.score,
-                date: new Date().toISOString(),
-                level: Game.level,
-                combo: Game.comboMultiplier
-            };
-            
-            // Получаем текущий рейтинг
-            let rating = Game.rating;
-            
-            // Добавляем новый результат
-            rating.push(playerEntry);
-            
-            // Сортируем по очкам (по убыванию)
-            rating.sort((a, b) => b.score - a.score);
-            
-            // Оставляем только топ-10
-            rating = rating.slice(0, 10);
-            
-            // Сохраняем
-            localStorage.setItem('seafood_rating', JSON.stringify(rating));
-            Game.rating = rating;
-        }
-        
-        // ========== ПОКАЗАТЬ РЕЙТИНГ ==========
-        function showRating() {
-            const ratingList = document.getElementById('ratingList');
-            ratingList.innerHTML = '';
-            
-            if (Game.rating.length === 0) {
-                ratingList.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Рейтинг пока пуст. Сыграйте игру!</div>';
-                return;
-            }
-            
-            Game.rating.forEach((entry, index) => {
-                const isCurrent = entry.name === Game.playerName && entry.score === Game.score;
-                const ratingItem = document.createElement('div');
-                ratingItem.className = `rating-item ${isCurrent ? 'current-user' : ''}`;
-                ratingItem.innerHTML = `
-                    <div class="rating-rank">${index + 1}</div>
-                    <div class="rating-info">
-                        <div class="rating-name">${entry.name}</div>
-                        <div style="font-size:0.7em;color:var(--text-muted)">Уровень: ${entry.level}, Комбо: x${entry.combo}</div>
-                    </div>
-                    <div class="rating-score">${entry.score}</div>
-                `;
-                ratingList.appendChild(ratingItem);
-            });
-            
-            document.getElementById('ratingModal').style.display = 'flex';
-        }
-        
         // ========== ОТРИСОВКА ==========
         function draw() {
             // Очищаем канвас
@@ -1820,7 +1480,6 @@
             drawShip();
             drawParticles();
         }
-        
         // ========== ИГРОВОЙ ЦИКЛ ==========
         function gameLoop(timestamp) {
             if (!Game.lastTime) Game.lastTime = timestamp;
@@ -1830,14 +1489,10 @@
             draw();
             requestAnimationFrame(gameLoop);
         }
-        
         // ========== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ==========
         function updateUI() {
             document.getElementById('score').textContent = Game.score;
             document.getElementById('level').textContent = Game.level;
-            document.getElementById('combo').textContent = `x${Game.comboMultiplier}`;
-            document.getElementById('combo').style.color = Game.comboMultiplier > 1 ? '#FFD700' : 'var(--aurora-teal)';
-            document.getElementById('combo').style.textShadow = Game.comboMultiplier > 1 ? '0 0 10px #FFD700' : '0 0 8px var(--aurora-teal)';
             document.getElementById('caught').textContent = Game.caught;
             const minutes = Math.floor(Game.time / 60);
             const seconds = Math.floor(Game.time % 60);
@@ -1850,7 +1505,6 @@
             document.getElementById('shopScore').textContent = Game.score;
             updateShopButtons();
         }
-        
         // ========== УПРАВЛЕНИЕ КОРАБЛЕМ ==========
         function updateShipPosition() {
             if (Game.shipSinking) return;
@@ -1878,39 +1532,25 @@
                 }
             }
         }
-        
         // ========== АНИМАЦИИ И ЭФФЕКТЫ ==========
         function animateScore() {
             const scoreElement = document.getElementById('score');
             scoreElement.classList.add('changed');
             setTimeout(() => scoreElement.classList.remove('changed'), 400);
         }
-        
-        function showCatchEffect(item, comboMultiplier = 1) {
+        function showCatchEffect(item) {
             const effect = document.createElement('div');
             effect.className = 'catch-effect';
-            const points = item.type.points * comboMultiplier;
-            effect.textContent = `${item.type.emoji} ${points > 0 ? '+' : ''}${points}`;
-            effect.style.color = item.type.type === 'good' ? (comboMultiplier > 1 ? '#FFD700' : '#00ff88') : '#ff4444';
+            effect.textContent = `${item.type.emoji} ${item.type.points > 0 ? '+' : ''}${item.type.points}`;
+            effect.style.color = item.type.type === 'good' ? '#00ff88' : '#ff4444';
             effect.style.left = '50%';
             effect.style.top = '50%';
             document.body.appendChild(effect);
             setTimeout(() => effect.remove(), 800);
         }
-        
-        function showComboEffect() {
-            const comboEffect = document.createElement('div');
-            comboEffect.className = 'combo-indicator';
-            comboEffect.textContent = `COMBO x${Game.comboMultiplier}!`;
-            comboEffect.style.fontSize = `${2 + Game.comboMultiplier * 0.5}em`;
-            document.querySelector('.game-area').appendChild(comboEffect);
-            setTimeout(() => comboEffect.remove(), 500);
-        }
-        
         function showLevelUp() {
             showNotification('Уровень повышен!', `Теперь вы на уровне ${Game.level}!`);
         }
-        
         function showNotification(title, message) {
             const notification = document.createElement('div');
             notification.className = 'notification';
@@ -1926,7 +1566,6 @@
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 2500);
         }
-        
         // ========== УПРАВЛЕНИЕ КНОПКАМИ ==========
         document.getElementById('playBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
@@ -1936,7 +1575,6 @@
                 initGame();
             }
         });
-        
         document.getElementById('pauseBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             if (!Game.running) return;
@@ -1946,28 +1584,26 @@
                 '<i class="fas fa-play"></i> ПРОДОЛЖИТЬ' : 
                 '<i class="fas fa-pause"></i> ПАУЗА';
         });
-        
-        // Заменяем кнопку звука на кнопку рейтинга
-        document.getElementById('ratingBtn').addEventListener('click', () => {
+        document.getElementById('soundBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
-            showRating();
+            Game.soundOn = !Game.soundOn;
+            document.getElementById('soundBtn').innerHTML = Game.soundOn ? 
+                '<i class="fas fa-volume-up"></i>' : 
+                '<i class="fas fa-volume-mute"></i>';
+            if (Game.soundOn) {
+                AudioManager.playBackgroundMusic();
+            } else {
+                AudioManager.stopBackgroundMusic();
+            }
         });
-        
         document.getElementById('shopBtn').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             document.getElementById('shopModal').style.display = 'flex';
         });
-        
         document.getElementById('closeShop').addEventListener('click', () => {
             AudioManager.playSound('buttonClick');
             document.getElementById('shopModal').style.display = 'none';
         });
-        
-        document.getElementById('closeRating').addEventListener('click', () => {
-            AudioManager.playSound('buttonClick');
-            document.getElementById('ratingModal').style.display = 'none';
-        });
-        
         // ========== МАГАЗИН ==========
         function updateShopButtons() {
             document.querySelectorAll('.buy-btn').forEach(btn => {
@@ -1976,7 +1612,6 @@
                 btn.style.opacity = Game.score < price ? '0.5' : '1';
             });
         }
-        
         document.querySelectorAll('.buy-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 AudioManager.playSound('buttonClick');
@@ -1986,7 +1621,6 @@
                 buyItem(price, promo, name);
             });
         });
-        
         function buyItem(price, promoCode, itemName) {
             if (Game.score < price) {
                 showNotification('Недостаточно очков', `Нужно ещё ${price - Game.score} ⭐`);
@@ -2014,7 +1648,6 @@
                 showPurchaseSuccess(promoCode, itemName);
             }
         }
-        
         function showPurchaseSuccess(promoCode, itemName) {
             showNotification('Скидка получена!', `Промокод: ${promoCode}`);
             const purchases = JSON.parse(localStorage.getItem('seafood_purchases') || '[]');
@@ -2028,7 +1661,6 @@
                 document.getElementById('shopModal').style.display = 'none';
             }, 2000);
         }
-        
         // ========== УПРАВЛЕНИЕ ==========
         document.addEventListener('keydown', (e) => {
             Game.keys[e.key] = true;
@@ -2037,11 +1669,9 @@
                 document.getElementById('pauseBtn').click();
             }
         });
-        
         document.addEventListener('keyup', (e) => {
             Game.keys[e.key] = false;
         });
-        
         // Управление для мобильных устройств
         Game.touch = { active: false, x: 0 };
         canvas.addEventListener('touchstart', (e) => {
@@ -2051,18 +1681,15 @@
             Game.touch.active = true;
             Game.touch.x = (e.touches[0].clientX - rect.left) * scaleX / pixelRatio;
         });
-        
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             Game.touch.x = (e.touches[0].clientX - rect.left) * scaleX / pixelRatio;
         });
-        
         canvas.addEventListener('touchend', () => {
             Game.touch.active = false;
         });
-        
         // Управление мышью для ПК
         canvas.addEventListener('mousemove', (e) => {
             if (!Game.running || Game.paused || Game.shipSinking) return;
@@ -2078,23 +1705,11 @@
                 Ship.x = canvasWidth - Ship.width;
             }
         });
-        
         // ========== ЗАПУСК ИГРЫ ==========
         AudioManager.init();
+        // createBubbles(); // Убрано, так как фон теперь видео
         resizeCanvas(); // Инициализируем размер канваса
         loadImagesAndMusic(); // Загружаем изображения и музыку
-        
-        // Запрашиваем имя игрока, если его нет
-        if (!Game.playerName || Game.playerName === 'Игрок') {
-            setTimeout(() => {
-                const name = prompt('Введите ваше имя для рейтинга:', Game.playerName);
-                if (name && name.trim()) {
-                    Game.playerName = name.trim();
-                    localStorage.setItem('playerName', Game.playerName);
-                }
-            }, 1000);
-        }
-        
         if (!localStorage.getItem('seafood_instructions')) {
             setTimeout(() => {
                 showNotification('Добро пожаловать!', 'Ловите рыбу, избегайте опасностей!');
@@ -2104,6 +1719,7 @@
     </script>
 </body>
 </html>
+
 
 
 
