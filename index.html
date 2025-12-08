@@ -43,7 +43,6 @@
             overflow-x: hidden;
             touch-action: manipulation;
             position: relative;
-            padding: 10px;
         }
         /* Фон с пузырьками */
         .bubble-bg {
@@ -71,7 +70,125 @@
                 opacity: 0;
             }
         }
-        /* Основной контейнер */
+        /* Экран запуска */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--navy-dark) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.5s ease-out;
+        }
+        .start-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .start-title {
+            font-family: 'Russo One', sans-serif;
+            font-size: 3em;
+            background: linear-gradient(90deg, var(--aurora-teal), var(--aurora-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+            animation: pulseTitle 2s infinite alternate;
+        }
+        @keyframes pulseTitle {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        .start-subtitle {
+            font-size: 1.2em;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        /* Кнопка начать */
+        .start-button {
+            background: linear-gradient(45deg, var(--aurora-teal), var(--aurora-green));
+            border: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.5em;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 250px;
+            justify-content: center;
+            z-index: 10;
+        }
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        .start-button:hover::before {
+            left: 100%;
+        }
+        .start-button:active {
+            transform: scale(0.95);
+        }
+        .start-button-glow {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+            border-radius: 70px;
+            z-index: -1;
+            animation: pulseGlow 2s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.7; transform: scale(1.05); }
+        }
+        /* Стартовые инструкции */
+        .start-instructions {
+            margin-top: 40px;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .instruction-item i {
+            color: var(--aurora-teal);
+            font-size: 1.2em;
+            min-width: 30px;
+        }
+        /* Основной контейнер игры */
         .game-container {
             max-width: 600px;
             margin: 0 auto;
@@ -80,7 +197,11 @@
             z-index: 10;
             display: flex;
             flex-direction: column;
-            min-height: calc(100vh - 20px);
+            min-height: 100vh;
+            display: none; /* Скрыт до старта игры */
+        }
+        .game-container.visible {
+            display: flex;
         }
         /* Шапка игры */
         .game-header {
@@ -127,13 +248,6 @@
             margin-bottom: 4px;
             font-weight: 600;
         }
-        .game-slogan {
-            font-size: 0.75em;
-            color: var(--text-light);
-            opacity: 0.8;
-            line-height: 1.3;
-        }
-        /* Персональный рекорд */
         .personal-record {
             display: flex;
             justify-content: center;
@@ -200,41 +314,6 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
         }
-        /* Прогресс уровня */
-        .progress-container {
-            margin: 10px 0;
-        }
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            color: var(--text-muted);
-            font-size: 0.75em;
-        }
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            position: relative;
-        }
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--aurora-teal), var(--aurora-purple));
-            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-        }
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
         /* Игровая зона */
         .game-area {
             position: relative;
@@ -258,7 +337,6 @@
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
-        /* Экран паузы */
         .pause-screen {
             position: absolute;
             inset: 0;
@@ -285,6 +363,14 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin: 12px 0;
+        }
+        @media (max-width: 480px) {
+            .controls {
+                grid-template-columns: 1fr 1fr;
+            }
+            #playBtn {
+                grid-column: span 2;
+            }
         }
         .control-btn {
             padding: 12px 8px;
@@ -322,7 +408,6 @@
         }
         #playBtn {
             background: linear-gradient(45deg, #00c853, #64dd17);
-            grid-column: span 2;
         }
         #pauseBtn {
             background: linear-gradient(45deg, #ff6b00, #ff9800);
@@ -336,14 +421,14 @@
         #leaderboardBtn {
             background: linear-gradient(45deg, #ff9800, #ff5722);
         }
-        /* Магазин и таблица лидеров */
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(12px);
-            z-index: 1000;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
             padding: 15px;
@@ -390,99 +475,6 @@
             background: rgba(255, 255, 255, 0.1);
             transform: rotate(90deg);
         }
-        /* Таблица лидеров */
-        .leaderboard-list {
-            margin: 15px 0;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            border-left: 3px solid transparent;
-            transition: all 0.3s;
-        }
-        .leaderboard-item.current-user {
-            border-left-color: var(--aurora-green);
-            background: rgba(0, 255, 171, 0.1);
-        }
-        .leaderboard-item.top-1 {
-            border-left-color: gold;
-            background: rgba(255, 215, 0, 0.1);
-        }
-        .leaderboard-item.top-2 {
-            border-left-color: silver;
-            background: rgba(192, 192, 192, 0.1);
-        }
-        .leaderboard-item.top-3 {
-            border-left-color: #cd7f32;
-            background: rgba(205, 127, 50, 0.1);
-        }
-        .leaderboard-rank {
-            font-weight: 800;
-            font-size: 1.2em;
-            min-width: 30px;
-            text-align: center;
-        }
-        .leaderboard-user {
-            flex-grow: 1;
-            margin-left: 10px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .leaderboard-score {
-            font-weight: 700;
-            color: var(--aurora-teal);
-            min-width: 60px;
-            text-align: right;
-        }
-        .leaderboard-score i {
-            margin-right: 5px;
-            color: var(--aurora-green);
-        }
-        /* Элемент магазина */
-        .shop-item {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 12px;
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            transition: all 0.3s;
-        }
-        .shop-item:hover {
-            border-color: var(--aurora-teal);
-            transform: translateX(5px);
-            background: rgba(255, 255, 255, 0.12);
-        }
-        .buy-btn {
-            background: linear-gradient(45deg, #00bfa5, #1de9b6);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.85em;
-            white-space: nowrap;
-        }
-        .buy-btn:hover:not(:disabled) {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(0, 191, 165, 0.5);
-        }
-        .buy-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
         /* Уведомления */
         .notification {
             position: fixed;
@@ -514,76 +506,69 @@
                 opacity: 0;
             }
         }
-        /* Экран загрузки */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--deep-blue);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            transition: opacity 0.5s;
-        }
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(0, 212, 255, 0.3);
-            border-top: 5px solid var(--aurora-teal);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        /* Адаптивность */
-        @media (max-width: 480px) {
-            .controls {
-                grid-template-columns: 1fr 1fr;
-            }
-            #playBtn {
-                grid-column: span 2;
-            }
-        }
-        @media (max-width: 360px) {
-            .game-title {
-                font-size: 1.4em;
-            }
-            .controls {
-                gap: 5px;
-            }
-            .control-btn {
-                font-size: 0.75em;
-                padding: 10px 5px;
-            }
+        /* Футер */
+        .game-footer {
+            text-align: center;
+            margin-top: 12px;
+            color: var(--text-muted);
+            font-size: 0.7em;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Экран загрузки -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <div style="color: var(--aurora-teal); font-size: 1.2em; margin-top: 10px;">Загрузка...</div>
+    <!-- Экран запуска -->
+    <div class="start-screen" id="startScreen">
+        <h1 class="start-title">⚓ МОРСКОЙ ЛОВЕЦ</h1>
+        <div class="start-subtitle">БУХТА • СЕВЕРОДВИНСК</div>
+        
+        <div class="start-instructions">
+            <div class="instruction-item">
+                <i class="fas fa-anchor"></i>
+                <span>Управляйте кораблем мышью или пальцем</span>
+            </div>
+            <div class="instruction-item">
+                <i class="fas fa-fish"></i>
+                <span>Ловите рыбу для получения очков</span>
+            </div>
+            <div class="instruction-item">
+                <i class="fas fa-skull-crossbones"></i>
+                <span>Избегайте опасных предметов</span>
+            </div>
+            <div class="instruction-item">
+                <i class="fas fa-gift"></i>
+                <span>Обменивайте очки на скидки в БУХТЕ</span>
+            </div>
+        </div>
+        
+        <button class="start-button" id="startButton">
+            <div class="start-button-glow"></div>
+            <i class="fas fa-play"></i>
+            НАЧАТЬ ИГРУ
+        </button>
+        
+        <div style="margin-top: 30px; color: var(--text-muted); font-size: 0.8em;">
+            <i class="fas fa-trophy"></i> Ваш рекорд: <span id="startHighScore">0</span> ⭐
+        </div>
     </div>
     
     <!-- Фон с пузырьками -->
     <div class="bubble-bg" id="bubbleBg"></div>
     
-    <div class="game-container">
+    <!-- Основной игровой интерфейс -->
+    <div class="game-container" id="gameContainer">
         <!-- Шапка игры -->
         <header class="game-header">
             <h1 class="game-title">⚓ Морской ловец</h1>
             <div class="game-subtitle">БУХТА • СЕВЕРОДВИНСК</div>
-            <div class="game-slogan">Лови рыбу, получай скидки в БУХТЕ!</div>
+            <div class="game-slogan" style="font-size: 0.75em; color: var(--text-muted); margin-top: 4px;">
+                Лови рыбу, получай скидки в БУХТЕ!
+            </div>
             <div class="personal-record">
                 <i class="fas fa-trophy"></i>
-                Ваш рекорд: <span id="personalHighScore">0</span> ⭐
+                Рекорд: <span id="personalHighScore">0</span> ⭐
             </div>
         </header>
         
@@ -633,7 +618,7 @@
         <!-- Управление -->
         <div class="controls">
             <button class="control-btn" id="playBtn">
-                <i class="fas fa-play"></i> ИГРАТЬ
+                <i class="fas fa-redo"></i> ЗАНОВО
             </button>
             <button class="control-btn" id="pauseBtn">
                 <i class="fas fa-pause"></i> ПАУЗА
@@ -650,7 +635,7 @@
         </div>
         
         <!-- Футер -->
-        <footer class="game-footer" style="text-align:center;margin-top:12px;color:var(--text-muted);font-size:0.7em;padding:8px;">
+        <footer class="game-footer">
             <p>Свежие морепродукты с доставкой • БУХТА • Северодвинск</p>
         </footer>
     </div>
@@ -665,21 +650,21 @@
             <p style="text-align:center;margin:15px 0;font-size:1em">
                 Ваши очки: <strong id="shopScore" style="color:var(--aurora-teal);font-size:1.2em">0</strong> ⭐
             </p>
-            <div class="shop-item">
+            <div class="shop-item" style="background: rgba(255, 255, 255, 0.08);border-radius: 12px;padding: 12px;margin: 10px 0;display: flex;justify-content: space-between;align-items: center;border: 1px solid rgba(0, 212, 255, 0.2);transition: all 0.3s;">
                 <div>
                     <strong style="color:white;font-size:0.95em">Скидка 5%</strong><br>
                     <small style="font-size:0.75em">На заказ от 1000 ₽</small>
                 </div>
-                <button class="buy-btn" data-price="100" data-promo="BUKHTA5" data-name="5% скидка">
+                <button class="buy-btn" data-price="100" data-promo="BUKHTA5" data-name="5% скидка" style="background: linear-gradient(45deg, #00bfa5, #1de9b6);border: none;padding: 8px 16px;border-radius: 20px;color: white;font-weight: 700;cursor: pointer;transition: all 0.3s;font-size: 0.85em;white-space: nowrap;">
                     100 ⭐
                 </button>
             </div>
-            <div class="shop-item">
+            <div class="shop-item" style="background: rgba(255, 255, 255, 0.08);border-radius: 12px;padding: 12px;margin: 10px 0;display: flex;justify-content: space-between;align-items: center;border: 1px solid rgba(0, 212, 255, 0.2);transition: all 0.3s;">
                 <div>
                     <strong style="color:white;font-size:0.95em">Скидка 10%</strong><br>
                     <small style="font-size:0.75em">На рыбные наборы</small>
                 </div>
-                <button class="buy-btn" data-price="250" data-promo="BUKHTA10" data-name="10% скидка">
+                <button class="buy-btn" data-price="250" data-promo="BUKHTA10" data-name="10% скидка" style="background: linear-gradient(45deg, #00bfa5, #1de9b6);border: none;padding: 8px 16px;border-radius: 20px;color: white;font-weight: 700;cursor: pointer;transition: all 0.3s;font-size: 0.85em;white-space: nowrap;">
                     250 ⭐
                 </button>
             </div>
@@ -699,10 +684,10 @@
             <p style="text-align:center;margin:15px 0;font-size:0.9em;color:var(--text-muted)">
                 Лучшие игроки этой недели
             </p>
-            <div class="leaderboard-list" id="leaderboardList">
+            <div class="leaderboard-list" id="leaderboardList" style="margin: 15px 0;max-height: 300px;overflow-y: auto;">
                 <!-- Таблица лидеров будет загружена здесь -->
                 <div style="text-align:center;padding:30px;color:var(--text-muted);">
-                    <i class="fas fa-spinner fa-spin" style="font-size:2em;margin-bottom:10px;"></i><br>
+                    <i class="fas fa-fish" style="font-size:2em;margin-bottom:10px;"></i><br>
                     Загрузка таблицы лидеров...
                 </div>
             </div>
@@ -715,18 +700,42 @@
     </div>
     
     <script>
-        // ========== ИНИЦИАЛИЗАЦИЯ VK BRIDGE ==========
+        // ========== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ ==========
         let vkBridgeInitialized = false;
         let vkUser = null;
+        let isGameInitialized = false;
         
+        // ========== СОЗДАНИЕ ПУЗЫРЬКОВ ==========
+        function createBubbles() {
+            const bubbleBg = document.getElementById('bubbleBg');
+            for (let i = 0; i < 25; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 25 + 5;
+                const x = Math.random() * 100;
+                const duration = Math.random() * 10 + 15;
+                const delay = Math.random() * 20;
+                
+                bubble.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}%;
+                    --bubble-x: ${(Math.random() - 0.5) * 100}px;
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                    opacity: ${Math.random() * 0.15 + 0.05};
+                `;
+                bubbleBg.appendChild(bubble);
+            }
+        }
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ VK ==========
         async function initVK() {
             try {
                 if (typeof vkBridge !== 'undefined') {
-                    // Инициализируем VK Mini App
                     await vkBridge.send('VKWebAppInit', {});
                     console.log('VK Mini App инициализирован');
                     
-                    // Получаем информацию о пользователе
                     const userData = await vkBridge.send('VKWebAppGetUserInfo', {});
                     vkUser = {
                         id: userData.id,
@@ -735,244 +744,73 @@
                         photo: userData.photo_100
                     };
                     
-                    console.log('Пользователь VK:', vkUser);
                     vkBridgeInitialized = true;
+                    console.log('Пользователь VK:', vkUser);
                     
                     // Загружаем рекорд пользователя
-                    loadUserHighScore();
-                    
-                    // Загружаем таблицу лидеров
-                    loadLeaderboard();
+                    await loadUserHighScore();
                     
                 } else {
                     console.log('Игра запущена вне VK Mini Apps');
-                    // Загружаем из localStorage для standalone режима
                     loadLocalHighScore();
                 }
             } catch (error) {
                 console.error('Ошибка инициализации VK:', error);
-                // Загружаем из localStorage
                 loadLocalHighScore();
             }
         }
         
         // ========== УПРАВЛЕНИЕ РЕКОРДАМИ ==========
-        const ScoreManager = {
-            // Сохранить рекорд
-            async saveHighScore(score) {
-                // Сохраняем локально
-                localStorage.setItem('seafood_highscore', score);
-                localStorage.setItem('seafood_highscore_date', new Date().toISOString());
-                
-                // Обновляем отображение
-                document.getElementById('personalHighScore').textContent = score;
-                
-                // Сохраняем в VK Storage если доступно
-                if (vkBridgeInitialized) {
-                    try {
-                        // Сохраняем в VK Storage
-                        await vkBridge.send('VKWebAppStorageSet', {
-                            key: 'seafood_highscore',
-                            value: score.toString()
-                        });
-                        
-                        console.log('Рекорд сохранен в VK Storage');
-                        
-                        // Добавляем в таблицу лидеров
-                        await this.addToLeaderboard(score);
-                        
-                    } catch (error) {
-                        console.error('Ошибка сохранения в VK Storage:', error);
-                    }
-                }
-            },
-            
-            // Загрузить рекорд пользователя
-            async loadUserHighScore() {
-                if (vkBridgeInitialized) {
-                    try {
-                        // Пробуем загрузить из VK Storage
-                        const data = await vkBridge.send('VKWebAppStorageGet', {
-                            keys: ['seafood_highscore']
-                        });
-                        
-                        if (data.keys && data.keys[0] && data.keys[0].value) {
-                            const score = parseInt(data.keys[0].value);
-                            localStorage.setItem('seafood_highscore', score);
-                            document.getElementById('personalHighScore').textContent = score;
-                            return score;
-                        }
-                    } catch (error) {
-                        console.error('Ошибка загрузки из VK Storage:', error);
-                    }
-                }
-                
-                // Загружаем из localStorage
-                return this.loadLocalHighScore();
-            },
-            
-            // Загрузить локальный рекорд
-            loadLocalHighScore() {
-                const score = localStorage.getItem('seafood_highscore');
-                if (score) {
-                    document.getElementById('personalHighScore').textContent = score;
-                    return parseInt(score);
-                }
-                return 0;
-            },
-            
-            // Добавить результат в таблицу лидеров
-            async addToLeaderboard(score) {
-                if (!vkBridgeInitialized || !vkUser) return;
-                
+        async function loadUserHighScore() {
+            if (vkBridgeInitialized) {
                 try {
-                    // Используем secure storage для симуляции таблицы лидеров
-                    // В реальном приложении нужно использовать VK API с сервером
-                    const leaderboardKey = 'leaderboard_' + getWeekNumber();
-                    
-                    // Получаем текущую таблицу лидеров
                     const data = await vkBridge.send('VKWebAppStorageGet', {
-                        keys: [leaderboardKey]
+                        keys: ['seafood_highscore']
                     });
                     
-                    let leaderboard = [];
                     if (data.keys && data.keys[0] && data.keys[0].value) {
-                        leaderboard = JSON.parse(data.keys[0].value);
+                        const score = parseInt(data.keys[0].value);
+                        localStorage.setItem('seafood_highscore', score);
+                        updateHighScoreDisplay(score);
+                        return score;
                     }
-                    
-                    // Добавляем или обновляем результат пользователя
-                    const userIndex = leaderboard.findIndex(item => item.id === vkUser.id);
-                    
-                    if (userIndex !== -1) {
-                        // Обновляем существующий результат, если новый лучше
-                        if (score > leaderboard[userIndex].score) {
-                            leaderboard[userIndex].score = score;
-                            leaderboard[userIndex].date = new Date().toISOString();
-                        }
-                    } else {
-                        // Добавляем нового пользователя
-                        leaderboard.push({
-                            id: vkUser.id,
-                            name: `${vkUser.firstName} ${vkUser.lastName}`,
-                            score: score,
-                            date: new Date().toISOString()
-                        });
-                    }
-                    
-                    // Сортируем по убыванию очков
-                    leaderboard.sort((a, b) => b.score - a.score);
-                    
-                    // Ограничиваем топ-20
-                    leaderboard = leaderboard.slice(0, 20);
-                    
-                    // Сохраняем обратно
+                } catch (error) {
+                    console.error('Ошибка загрузки из VK Storage:', error);
+                }
+            }
+            return loadLocalHighScore();
+        }
+        
+        function loadLocalHighScore() {
+            const score = localStorage.getItem('seafood_highscore') || '0';
+            updateHighScoreDisplay(parseInt(score));
+            return parseInt(score);
+        }
+        
+        function updateHighScoreDisplay(score) {
+            document.getElementById('personalHighScore').textContent = score;
+            document.getElementById('startHighScore').textContent = score;
+        }
+        
+        async function saveHighScore(score) {
+            localStorage.setItem('seafood_highscore', score);
+            localStorage.setItem('seafood_highscore_date', new Date().toISOString());
+            updateHighScoreDisplay(score);
+            
+            if (vkBridgeInitialized) {
+                try {
                     await vkBridge.send('VKWebAppStorageSet', {
-                        key: leaderboardKey,
-                        value: JSON.stringify(leaderboard)
+                        key: 'seafood_highscore',
+                        value: score.toString()
                     });
-                    
-                    console.log('Таблица лидеров обновлена');
-                    
+                    console.log('Рекорд сохранен в VK Storage');
                 } catch (error) {
-                    console.error('Ошибка обновления таблицы лидеров:', error);
+                    console.error('Ошибка сохранения в VK Storage:', error);
                 }
-            },
-            
-            // Получить таблицу лидеров
-            async getLeaderboard() {
-                if (!vkBridgeInitialized) {
-                    // Возвращаем тестовые данные для standalone режима
-                    return this.getMockLeaderboard();
-                }
-                
-                try {
-                    const leaderboardKey = 'leaderboard_' + getWeekNumber();
-                    const data = await vkBridge.send('VKWebAppStorageGet', {
-                        keys: [leaderboardKey]
-                    });
-                    
-                    if (data.keys && data.keys[0] && data.keys[0].value) {
-                        return JSON.parse(data.keys[0].value);
-                    }
-                    
-                    return [];
-                } catch (error) {
-                    console.error('Ошибка загрузки таблицы лидеров:', error);
-                    return this.getMockLeaderboard();
-                }
-            },
-            
-            // Тестовая таблица лидеров
-            getMockLeaderboard() {
-                return [
-                    { id: 1, name: 'Алексей Мореходов', score: 1250, date: new Date().toISOString() },
-                    { id: 2, name: 'Марина Волнова', score: 980, date: new Date().toISOString() },
-                    { id: 3, name: 'Дмитрий Причалов', score: 850, date: new Date().toISOString() },
-                    { id: 4, name: 'Светлана Якорь', score: 720, date: new Date().toISOString() },
-                    { id: 5, name: 'Игорь Штурвалов', score: 650, date: new Date().toISOString() }
-                ];
-            }
-        };
-        
-        // Вспомогательная функция для получения номера недели
-        function getWeekNumber() {
-            const now = new Date();
-            const startOfYear = new Date(now.getFullYear(), 0, 1);
-            const pastDaysOfYear = (now - startOfYear) / 86400000;
-            return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
-        }
-        
-        // ========== ОТОБРАЖЕНИЕ ТАБЛИЦЫ ЛИДЕРОВ ==========
-        async function loadLeaderboard() {
-            try {
-                const leaderboard = await ScoreManager.getLeaderboard();
-                displayLeaderboard(leaderboard);
-            } catch (error) {
-                console.error('Ошибка загрузки таблицы лидеров:', error);
-                displayLeaderboard(ScoreManager.getMockLeaderboard());
             }
         }
         
-        function displayLeaderboard(leaderboard) {
-            const container = document.getElementById('leaderboardList');
-            
-            if (!leaderboard || leaderboard.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align:center;padding:30px;color:var(--text-muted);">
-                        <i class="fas fa-fish" style="font-size:2em;margin-bottom:10px;"></i><br>
-                        Таблица лидеров пуста<br>
-                        <small>Будьте первым!</small>
-                    </div>
-                `;
-                return;
-            }
-            
-            let html = '';
-            leaderboard.forEach((user, index) => {
-                const isCurrentUser = vkUser && user.id === vkUser.id;
-                const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
-                const userClass = isCurrentUser ? 'current-user' : '';
-                
-                html += `
-                    <div class="leaderboard-item ${rankClass} ${userClass}">
-                        <div class="leaderboard-rank">
-                            ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
-                        </div>
-                        <div class="leaderboard-user">
-                            ${user.name}
-                            ${isCurrentUser ? ' <i class="fas fa-user" style="color:var(--aurora-green);font-size:0.8em;"></i>' : ''}
-                        </div>
-                        <div class="leaderboard-score">
-                            <i class="fas fa-star"></i> ${user.score}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-        
-        // ========== ОСНОВНАЯ ЛОГИКА ИГРЫ ==========
+        // ========== ИГРОВАЯ ЛОГИКА ==========
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -1011,7 +849,6 @@
             waveFrequency: 0.05
         };
         
-        // Типы предметов
         const ItemTypes = [
             { name: 'Сёмга', points: 10, color: '#FF5722', type: 'good', emoji: '🐟' },
             { name: 'Креветка', points: 15, color: '#FF9800', type: 'good', emoji: '🦐' },
@@ -1021,17 +858,27 @@
             { name: 'Паразиты', points: -20, color: '#607D8B', type: 'bad', emoji: '💣' },
         ];
         
-        // Инициализация канваса
         function resizeCanvas() {
             const container = canvas.parentElement;
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
-            canvas.style.width = container.clientWidth + 'px';
-            canvas.style.height = container.clientHeight + 'px';
+            const displayWidth = container.clientWidth;
+            const displayHeight = container.clientHeight;
+            const dpr = window.devicePixelRatio || 1;
+            
+            canvas.width = displayWidth * dpr;
+            canvas.height = displayHeight * dpr;
+            
+            canvas.style.width = displayWidth + 'px';
+            canvas.style.height = displayHeight + 'px';
+            
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
         }
         
-        // Инициализация игры
         function initGame() {
+            if (isGameInitialized) return;
+            isGameInitialized = true;
+            
             resizeCanvas();
             
             Game.score = 0;
@@ -1057,134 +904,80 @@
             }
         }
         
-        // Игровой цикл
-        function gameLoop(timestamp) {
-            if (!Game.lastTime) Game.lastTime = timestamp;
-            const deltaTime = (timestamp - Game.lastTime) / 1000;
-            Game.lastTime = timestamp;
-            
-            updateGame(deltaTime);
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-        
-        // Обновление игры
-        function updateGame(deltaTime) {
-            if (!Game.running || Game.paused) return;
-            
-            Game.time += deltaTime;
-            updateWaves(deltaTime);
-            
-            // Спавн предметов
-            if (Date.now() - Game.lastSpawn > Game.spawnRate) {
-                spawnItem();
-                Game.lastSpawn = Date.now();
-                Game.spawnRate = Math.max(500, 1500 - Game.level * 100);
-            }
-            
-            // Обновление корабля
-            updateShipPosition();
-            
-            // Обновление предметов
-            for (let i = Game.items.length - 1; i >= 0; i--) {
-                const item = Game.items[i];
-                item.y += item.speed;
-                
-                // Проверка столкновения
-                if (item.y + 20 > Ship.y &&
-                    item.x + 20 > Ship.x &&
-                    item.x < Ship.x + Ship.width) {
-                    
-                    Game.score += item.type.points;
-                    Game.caught++;
-                    
-                    if (item.type.type === 'bad') {
-                        Game.health--;
-                        if (Game.health <= 0) {
-                            gameOver();
-                        }
-                    }
-                    
-                    if (item.type.type === 'good' && Game.caught % 10 === 0) {
-                        Game.level++;
-                        Game.speed += 0.4;
-                    }
-                    
-                    Game.items.splice(i, 1);
-                    updateUI();
-                    continue;
-                }
-                
-                if (item.y > canvas.height) {
-                    Game.items.splice(i, 1);
-                }
-            }
-        }
-        
-        // Создание предмета
         function spawnItem() {
+            if (!Game.running || Game.paused || Game.shipSinking) return;
+            
             const type = ItemTypes[Math.floor(Math.random() * ItemTypes.length)];
             const item = {
                 x: Math.random() * (canvas.width - 40) + 20,
                 y: -30,
                 type: type,
-                speed: Game.speed + Math.random() * 2
+                speed: Game.speed + Math.random() * 2,
+                width: 30,
+                height: 30
             };
             Game.items.push(item);
         }
         
-        // Обновление волн
         function updateWaves(deltaTime) {
             Game.waveOffset += Game.waveSpeed * deltaTime * 60;
+            Game.waveTime += deltaTime;
+            
             const wavePosition = Math.sin(Game.waveOffset + Ship.x * Ship.waveFrequency) * Ship.waveHeight;
             Ship.y = Ship.baseY + wavePosition;
         }
         
-        // Управление кораблем
         function updateShipPosition() {
+            if (Game.shipSinking) return;
+            
+            const speed = Ship.speed;
             if (Game.keys['ArrowLeft'] || Game.keys['a']) {
-                Ship.x -= Ship.speed;
-            }
-            if (Game.keys['ArrowRight'] || Game.keys['d']) {
-                Ship.x += Ship.speed;
+                Ship.x -= speed;
+            } else if (Game.keys['ArrowRight'] || Game.keys['d']) {
+                Ship.x += speed;
             }
             
             Ship.x = Math.max(0, Math.min(canvas.width - Ship.width, Ship.x));
             
-            // Touch управление
             if (Game.touch && Game.touch.active) {
                 Ship.x = Game.touch.x - Ship.width / 2;
                 Ship.x = Math.max(0, Math.min(canvas.width - Ship.width, Ship.x));
             }
         }
         
-        // Отрисовка
         function draw() {
-            // Фон
-            ctx.fillStyle = '#0a2a5e';
+            // Очищаем канвас
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Градиентный фон
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#0a3260');
+            gradient.addColorStop(0.7, '#0a2a5e');
+            gradient.addColorStop(1, '#082f49');
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Волны
+            // Рисуем волны
             drawWaves();
             
-            // Предметы
+            // Рисуем предметы
             Game.items.forEach(item => {
                 ctx.fillStyle = item.type.color;
                 ctx.beginPath();
-                ctx.arc(item.x, item.y, 20, 0, Math.PI * 2);
+                ctx.arc(item.x, item.y, 15, 0, Math.PI * 2);
                 ctx.fill();
+                
                 ctx.fillStyle = 'white';
-                ctx.font = '16px Arial';
+                ctx.font = '20px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(item.type.emoji, item.x, item.y);
             });
             
-            // Корабль
+            // Рисуем корабль
             drawShip();
         }
         
-        // Отрисовка волн
         function drawWaves() {
             ctx.strokeStyle = 'rgba(168, 208, 230, 0.3)';
             ctx.lineWidth = 2;
@@ -1200,8 +993,16 @@
             }
         }
         
-        // Отрисовка корабля
         function drawShip() {
+            ctx.save();
+            
+            // Тень корабля
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            // Корпус
             ctx.fillStyle = '#8B4513';
             ctx.beginPath();
             ctx.moveTo(Ship.x, Ship.y);
@@ -1218,26 +1019,92 @@
             // Кабина
             ctx.fillStyle = '#CD853F';
             ctx.fillRect(Ship.x + Ship.width * 0.35, Ship.y - 25, Ship.width * 0.3, 15);
+            
+            // Окно
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(Ship.x + Ship.width * 0.4, Ship.y - 20, Ship.width * 0.2, 8);
+            
+            ctx.restore();
         }
         
-        // Конец игры
+        function updateGame(deltaTime) {
+            if (!Game.running || Game.paused) return;
+            
+            Game.time += deltaTime;
+            updateWaves(deltaTime);
+            
+            if (Date.now() - Game.lastSpawn > Game.spawnRate) {
+                spawnItem();
+                Game.lastSpawn = Date.now();
+                Game.spawnRate = Math.max(500, 1500 - Game.level * 100);
+            }
+            
+            updateShipPosition();
+            
+            for (let i = Game.items.length - 1; i >= 0; i--) {
+                const item = Game.items[i];
+                item.y += item.speed;
+                
+                const shipWaveOffset = Math.sin(Game.waveOffset + Ship.x * Ship.waveFrequency) * Ship.waveHeight;
+                const effectiveShipY = Ship.baseY + shipWaveOffset;
+                
+                if (item.y + 15 > effectiveShipY &&
+                    item.x + 30 > Ship.x &&
+                    item.x < Ship.x + Ship.width &&
+                    item.y < effectiveShipY + Ship.height) {
+                    
+                    Game.score += item.type.points;
+                    Game.caught++;
+                    
+                    if (item.type.type === 'bad') {
+                        Game.health--;
+                        if (Game.health <= 0) {
+                            gameOver();
+                        }
+                    }
+                    
+                    if (item.type.type === 'good' && Game.caught % 10 === 0) {
+                        Game.level++;
+                        Game.speed += 0.4;
+                        showNotification('Уровень повышен!', `Теперь вы на уровне ${Game.level}!`);
+                    }
+                    
+                    Game.items.splice(i, 1);
+                    updateUI();
+                    continue;
+                }
+                
+                if (item.y > canvas.height + 40) {
+                    Game.items.splice(i, 1);
+                }
+            }
+        }
+        
+        function gameLoop(timestamp) {
+            if (!Game.lastTime) Game.lastTime = timestamp;
+            const deltaTime = (timestamp - Game.lastTime) / 1000;
+            Game.lastTime = timestamp;
+            
+            updateGame(deltaTime);
+            draw();
+            
+            if (Game.running) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        
         function gameOver() {
             Game.running = false;
             
-            // Сохраняем рекорд
             const currentHighScore = parseInt(localStorage.getItem('seafood_highscore') || '0');
             if (Game.score > currentHighScore) {
-                ScoreManager.saveHighScore(Game.score);
+                saveHighScore(Game.score);
                 showNotification('🎉 Новый рекорд!', `${Game.score} очков!`);
             } else {
                 showNotification('Игра окончена!', `Ваш счет: ${Game.score} очков`);
             }
-            
-            // Обновляем таблицу лидеров
-            loadLeaderboard();
         }
         
-        // Обновление UI
         function updateUI() {
             document.getElementById('score').textContent = Game.score;
             document.getElementById('level').textContent = Game.level;
@@ -1246,7 +1113,8 @@
             
             const minutes = Math.floor(Game.time / 60);
             const seconds = Math.floor(Game.time % 60);
-            document.getElementById('time').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('time').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
             const progress = Game.caught % 10;
             document.getElementById('progressText').textContent = `${progress}/10`;
@@ -1260,10 +1128,10 @@
             notification.className = 'notification';
             notification.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-bell" style="color: var(--aurora-teal);"></i>
+                    <i class="fas fa-bell" style="color: var(--aurora-teal); font-size: 1.2em;"></i>
                     <div>
-                        <div style="font-weight: 700;">${title}</div>
-                        <div style="font-size: 0.9em;">${message}</div>
+                        <div style="font-weight: 700; color: white; font-size: 0.9em;">${title}</div>
+                        <div style="color: var(--text-muted); font-size: 0.8em;">${message}</div>
                     </div>
                 </div>
             `;
@@ -1272,9 +1140,12 @@
         }
         
         // ========== ОБРАБОТЧИКИ СОБЫТИЙ ==========
-        // Клавиатура
         document.addEventListener('keydown', (e) => {
             Game.keys[e.key] = true;
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                document.getElementById('pauseBtn').click();
+            }
         });
         
         document.addEventListener('keyup', (e) => {
@@ -1288,13 +1159,13 @@
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             Game.touch.active = true;
-            Game.touch.x = e.touches[0].clientX - rect.left;
+            Game.touch.x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width);
         });
         
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
-            Game.touch.x = e.touches[0].clientX - rect.left;
+            Game.touch.x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width);
         });
         
         canvas.addEventListener('touchend', () => {
@@ -1305,7 +1176,7 @@
         canvas.addEventListener('mousemove', (e) => {
             if (!Game.running || Game.paused) return;
             const rect = canvas.getBoundingClientRect();
-            Game.touch.x = e.clientX - rect.left;
+            Game.touch.x = (e.clientX - rect.left) * (canvas.width / rect.width);
             Game.touch.active = true;
         });
         
@@ -1313,24 +1184,46 @@
             Game.touch.active = false;
         });
         
+        // Кнопка старта
+        document.getElementById('startButton').addEventListener('click', () => {
+            // Скрываем стартовый экран
+            document.getElementById('startScreen').classList.add('hidden');
+            
+            // Показываем игровой интерфейс
+            setTimeout(() => {
+                document.getElementById('gameContainer').classList.add('visible');
+                
+                // Инициализируем игру
+                initGame();
+                
+                // Показываем приветственное сообщение
+                setTimeout(() => {
+                    showNotification('Добро пожаловать!', 'Управляйте кораблем мышью или пальцем');
+                }, 500);
+            }, 500);
+        });
+        
         // Кнопки управления
         document.getElementById('playBtn').addEventListener('click', () => {
-            if (!Game.running) {
-                initGame();
-            } else {
-                initGame(); // Рестарт
-            }
+            Game.running = false;
+            isGameInitialized = false;
+            initGame();
         });
         
         document.getElementById('pauseBtn').addEventListener('click', () => {
             if (!Game.running) return;
             Game.paused = !Game.paused;
             document.getElementById('pauseScreen').style.display = Game.paused ? 'flex' : 'none';
+            document.getElementById('pauseBtn').innerHTML = Game.paused ? 
+                '<i class="fas fa-play"></i> ПРОДОЛЖИТЬ' : 
+                '<i class="fas fa-pause"></i> ПАУЗА';
         });
         
         document.getElementById('soundBtn').addEventListener('click', function() {
             Game.soundOn = !Game.soundOn;
-            this.innerHTML = Game.soundOn ? '<i class="fas fa-volume-up"></i> ЗВУК' : '<i class="fas fa-volume-mute"></i> ЗВУК';
+            this.innerHTML = Game.soundOn ? 
+                '<i class="fas fa-volume-up"></i> ЗВУК' : 
+                '<i class="fas fa-volume-mute"></i> ЗВУК';
         });
         
         // Магазин
@@ -1363,10 +1256,9 @@
                     Game.score -= price;
                     updateUI();
                     
-                    // Отправляем промокод через VK
                     if (vkBridgeInitialized) {
                         vkBridge.send("VKWebAppSendMessage", {
-                            peer_id: -123456789, // ID группы
+                            peer_id: -123456789,
                             message: `🎮 МОРСКОЙ ЛОВЕЦ\n🎁 Получена скидка: "${name}"\n✨ Промокод: ${promo}\n💬 Предъявите при заказе в БУХТЕ!`,
                             random_id: Math.floor(Math.random() * 1000000)
                         }).then(() => {
@@ -1385,87 +1277,58 @@
             });
         });
         
-        // Поделиться рекордом
-        document.getElementById('shareScoreBtn').addEventListener('click', async () => {
-            const score = Game.score || parseInt(localStorage.getItem('seafood_highscore') || '0');
+        // Таблица лидеров (упрощенная версия)
+        async function loadLeaderboard() {
+            const container = document.getElementById('leaderboardList');
             
-            if (vkBridgeInitialized) {
-                try {
-                    await vkBridge.send('VKWebAppShowWallPostBox', {
-                        message: `Я поймал ${score} рыбин в игре "Морской ловец"! 🎮🐟\n\nПопробуй побить мой рекорд!`,
-                        attachments: 'https://vk.com/app123456' // Замените на ссылку на ваше приложение
-                    });
-                    showNotification('Поделились рекордом!', 'Спасибо за распространение!');
-                } catch (error) {
-                    console.error('Ошибка при публикации:', error);
-                    showNotification('Ошибка', 'Не удалось поделиться рекордом');
-                }
-            } else {
-                // Для standalone режима
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Мой рекорд в Морском ловце',
-                        text: `Я поймал ${score} рыбин в игре "Морской ловец"! 🎮🐟`,
-                        url: window.location.href
-                    });
-                } else {
-                    navigator.clipboard.writeText(`Мой рекорд в Морском ловце: ${score} очков!`);
-                    showNotification('Рекорд скопирован!', 'Вставьте в социальные сети');
-                }
-            }
-        });
+            // Тестовые данные
+            const mockLeaderboard = [
+                { id: 1, name: 'Алексей Мореходов', score: 1250, date: new Date().toISOString() },
+                { id: 2, name: 'Марина Волнова', score: 980, date: new Date().toISOString() },
+                { id: 3, name: 'Дмитрий Причалов', score: 850, date: new Date().toISOString() },
+                { id: 4, name: 'Светлана Якорь', score: 720, date: new Date().toISOString() },
+                { id: 5, name: 'Игорь Штурвалов', score: 650, date: new Date().toISOString() }
+            ];
+            
+            let html = '';
+            mockLeaderboard.forEach((user, index) => {
+                const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+                
+                html += `
+                    <div class="leaderboard-item" style="display: flex;align-items: center;justify-content: space-between;padding: 10px 15px;margin-bottom: 8px;background: rgba(255, 255, 255, 0.08);border-radius: 10px;border-left: 3px solid transparent;${rankClass === 'top-1' ? 'border-left-color: gold;background: rgba(255, 215, 0, 0.1);' : rankClass === 'top-2' ? 'border-left-color: silver;background: rgba(192, 192, 192, 0.1);' : rankClass === 'top-3' ? 'border-left-color: #cd7f32;background: rgba(205, 127, 50, 0.1);' : ''}">
+                        <div style="font-weight: 800;font-size: 1.2em;min-width: 30px;text-align: center;">
+                            ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                        </div>
+                        <div style="flex-grow: 1;margin-left: 10px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                            ${user.name}
+                        </div>
+                        <div style="font-weight: 700;color: var(--aurora-teal);min-width: 60px;text-align: right;">
+                            <i class="fas fa-star" style="color: var(--aurora-green);margin-right: 5px;"></i> ${user.score}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
         
         // ========== ЗАГРУЗКА ИГРЫ ==========
         window.addEventListener('load', async () => {
-            // Создаем пузырьки фона
+            // Создаем пузырьки
             createBubbles();
             
             // Инициализируем VK
             await initVK();
             
-            // Инициализируем канвас
+            // Инициализируем канвас (скрыто)
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
             
-            // Запускаем игру
+            // Показываем стартовый экран
             setTimeout(() => {
-                document.getElementById('loadingScreen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loadingScreen').style.display = 'none';
-                    initGame();
-                    
-                    // Показываем приветственное сообщение
-                    if (!localStorage.getItem('seafood_welcome')) {
-                        setTimeout(() => {
-                            showNotification('Добро пожаловать!', 'Ловите рыбу, зарабатывайте скидки!');
-                            localStorage.setItem('seafood_welcome', 'true');
-                        }, 1000);
-                    }
-                }, 500);
-            }, 1000);
+                document.getElementById('startScreen').style.opacity = '1';
+            }, 100);
         });
-        
-        // Создание пузырьков фона
-        function createBubbles() {
-            const bubbleBg = document.getElementById('bubbleBg');
-            for (let i = 0; i < 20; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = Math.random() * 20 + 5;
-                const x = Math.random() * 100;
-                const duration = Math.random() * 10 + 10;
-                const delay = Math.random() * 15;
-                bubble.style.cssText = `
-                    width: ${size}px;
-                    height: ${size}px;
-                    left: ${x}%;
-                    --bubble-x: ${(Math.random() - 0.5) * 50}px;
-                    animation-delay: ${delay}s;
-                    animation-duration: ${duration}s;
-                `;
-                bubbleBg.appendChild(bubble);
-            }
-        }
     </script>
 </body>
 </html>
