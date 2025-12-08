@@ -37,7 +37,6 @@
         }
         body {
             font-family: 'Exo 2', sans-serif;
-            /* Убираем градиентный фон, он теперь заменен видео */
             background: transparent;
             color: var(--text-light);
             min-height: 100vh;
@@ -643,8 +642,8 @@
     <!-- Экран загрузки -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-spinner"></div>
-        <div style="color: var(--aurora-teal); font-size: 1.2em; margin-top: 10px;">Загрузка изображений...</div>
-        <div style="color: var(--text-muted); font-size: 0.9em; margin-top: 5px;" id="loadingProgress">0/7</div>
+        <div style="color: var(--aurora-teal); font-size: 1.2em; margin-top: 10px;">Загрузка изображений и музыки...</div>
+        <div style="color: var(--text-muted); font-size: 0.9em; margin-top: 5px;" id="loadingProgress">0/8</div>
     </div>
     <!-- Фоновое видео -->
     <video id="bgVideo" autoplay muted loop playsinline>
@@ -787,25 +786,53 @@
             backgroundMusic: null,
             sounds: {},
             init: function() {
-                // Создаем фоновую музыку (океанские волны + спокойная мелодия)
-                this.backgroundMusic = new Audio();
+                // Создаем фоновую музыку из файла
                 this.createBackgroundMusic();
                 // Создаем звуковые эффекты
                 this.createSoundEffects();
             },
             createBackgroundMusic: function() {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.type = 'sine';
-                oscillator.frequency.value = 110;
-                gainNode.gain.value = 0.1;
-                oscillator.start();
-                this.bgOscillator = oscillator;
-                this.bgGainNode = gainNode;
-                this.bgAudioContext = audioContext;
+                // Создаем элемент Audio для фоновой музыки
+                this.backgroundMusic = new Audio('music.mp3');
+                this.backgroundMusic.loop = true;
+                this.backgroundMusic.volume = 0.3; // Громкость 30%
+                this.backgroundMusic.preload = 'auto';
+                
+                // Обработчики событий для музыки
+                this.backgroundMusic.oncanplaythrough = () => {
+                    console.log("Фоновая музыка загружена и готова к воспроизведению");
+                };
+                
+                this.backgroundMusic.onerror = () => {
+                    console.error("Ошибка загрузки фоновой музыки");
+                    // Если не удалось загрузить музыку, создаем синтетическую музыку как fallback
+                    this.createFallbackBackgroundMusic();
+                };
+            },
+            createFallbackBackgroundMusic: function() {
+                // Создаем синтетическую фоновую музыку (как было раньше)
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = 110;
+                    gainNode.gain.value = 0.1;
+                    oscillator.start();
+                    this.bgOscillator = oscillator;
+                    this.bgGainNode = gainNode;
+                    this.bgAudioContext = audioContext;
+                    this.backgroundMusic = { 
+                        play: () => { if (this.bgGainNode) this.bgGainNode.gain.value = 0.1; },
+                        pause: () => { if (this.bgGainNode) this.bgGainNode.gain.value = 0; },
+                        volume: 0.1 
+                    };
+                    console.log("Создана синтетическая фоновая музыка (fallback)");
+                } catch (error) {
+                    console.error("Не удалось создать синтетическую музыку:", error);
+                }
             },
             createSoundEffects: function() {
                 this.sounds = {
@@ -840,12 +867,26 @@
                 };
             },
             playBackgroundMusic: function() {
-                if (!Game.soundOn || !this.bgGainNode) return;
-                this.bgGainNode.gain.value = 0.1;
+                if (!Game.soundOn) return;
+                
+                if (this.backgroundMusic && typeof this.backgroundMusic.play === 'function') {
+                    this.backgroundMusic.play().catch(error => {
+                        console.warn("Автовоспроизведение музыки заблокировано:", error);
+                        // На некоторых устройствах требуется взаимодействие с пользователем
+                        // перед первым воспроизведением аудио
+                    });
+                } else if (this.bgGainNode) {
+                    // Используем fallback музыку
+                    this.bgGainNode.gain.value = 0.1;
+                }
             },
             stopBackgroundMusic: function() {
-                if (!this.bgGainNode) return;
-                this.bgGainNode.gain.value = 0;
+                if (this.backgroundMusic && typeof this.backgroundMusic.pause === 'function') {
+                    this.backgroundMusic.pause();
+                    this.backgroundMusic.currentTime = 0;
+                } else if (this.bgGainNode) {
+                    this.bgGainNode.gain.value = 0;
+                }
             },
             playSound: function(soundName) {
                 if (!Game.soundOn || !this.sounds[soundName]) return;
@@ -919,7 +960,7 @@
             waveSpeed: 0.02,
             waveTime: 0,
             imagesLoaded: 0,
-            totalImages: 7 // 6 рыб + корабль
+            totalImages: 8 // 6 рыб + корабль + музыка
         };
         // Размеры корабля (в логических единицах, не зависящих от pixelRatio)
         const Ship = {
@@ -1015,25 +1056,20 @@
                 height: 40
             },
         ];
-        // ========== ЗАГРУЗКА ИЗОБРАЖЕНИЙ ==========
+        // ========== ЗАГРУЗКА ИЗОБРАЖЕНИЙ И МУЗЫКИ ==========
         let shipImage = null;
         let imagesLoadedCount = 0;
-        function loadImages() {
+        let musicLoaded = false;
+        
+        function loadImagesAndMusic() {
             const loadingProgress = document.getElementById('loadingProgress');
+            
             // Загружаем корабль
             shipImage = new Image();
             shipImage.onload = () => {
                 imagesLoadedCount++;
                 loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
-                if (imagesLoadedCount === Game.totalImages) {
-                    setTimeout(() => {
-                        document.getElementById('loadingScreen').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('loadingScreen').style.display = 'none';
-                            initGame();
-                        }, 500);
-                    }, 500);
-                }
+                checkAllLoaded();
             };
             shipImage.onerror = () => {
                 console.error("Ошибка загрузки корабля");
@@ -1041,8 +1077,10 @@
                 shipImage = createFallbackShip();
                 imagesLoadedCount++;
                 loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
+                checkAllLoaded();
             };
             shipImage.src = 'ship5.png';
+            
             // Загружаем изображения рыб
             ItemTypes.forEach((item, index) => {
                 item.imageObj = new Image();
@@ -1058,25 +1096,69 @@
                         item.height = 40;
                         item.width = 40 * aspectRatio;
                     }
-                    if (imagesLoadedCount === Game.totalImages) {
-                        setTimeout(() => {
-                            document.getElementById('loadingScreen').style.opacity = '0';
-                            setTimeout(() => {
-                                document.getElementById('loadingScreen').style.display = 'none';
-                                initGame();
-                            }, 500);
-                        }, 500);
-                    }
+                    checkAllLoaded();
                 };
                 item.imageObj.onerror = () => {
                     console.error(`Ошибка загрузки изображения: ${item.image}`);
                     // Используем fallback
                     imagesLoadedCount++;
                     loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
+                    checkAllLoaded();
                 };
                 item.imageObj.src = item.image;
             });
+            
+            // Загружаем фоновую музыку
+            const musicLoadCheck = () => {
+                musicLoaded = true;
+                imagesLoadedCount++;
+                loadingProgress.textContent = `${imagesLoadedCount}/${Game.totalImages}`;
+                checkAllLoaded();
+            };
+            
+            // Пытаемся загрузить музыку
+            const music = new Audio('music.mp3');
+            music.preload = 'auto';
+            
+            // Проверяем, загрузилась ли музыка
+            music.oncanplaythrough = () => {
+                console.log("Музыка загружена");
+                musicLoadCheck();
+            };
+            
+            music.onerror = () => {
+                console.warn("Не удалось загрузить музыку, используем fallback");
+                musicLoadCheck(); // Все равно считаем загруженной, так как есть fallback
+            };
+            
+            // На всякий случай, если музыка уже загружена
+            if (music.readyState >= 3) {
+                musicLoadCheck();
+            }
+            
+            // Таймаут на случай проблем с загрузкой музыки
+            setTimeout(() => {
+                if (!musicLoaded) {
+                    console.warn("Таймаут загрузки музыки, продолжаем без неё");
+                    musicLoadCheck();
+                }
+            }, 5000);
         }
+        
+        function checkAllLoaded() {
+            const loadingProgress = document.getElementById('loadingProgress');
+            
+            if (imagesLoadedCount === Game.totalImages) {
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('loadingScreen').style.display = 'none';
+                        initGame();
+                    }, 500);
+                }, 500);
+            }
+        }
+        
         // Создание простого корабля на случай ошибки загрузки
         function createFallbackShip() {
             const canvas = document.createElement('canvas');
@@ -1117,6 +1199,7 @@
             Game.caught = 0;
             Game.running = true;
             Game.paused = false;
+            Game.soundOn = true;
             Game.speed = 2;
             Game.items = [];
             Game.particles = [];
@@ -1626,7 +1709,7 @@
         AudioManager.init();
         // createBubbles(); // Убрано, так как фон теперь видео
         resizeCanvas(); // Инициализируем размер канваса
-        loadImages(); // Загружаем изображения
+        loadImagesAndMusic(); // Загружаем изображения и музыку
         if (!localStorage.getItem('seafood_instructions')) {
             setTimeout(() => {
                 showNotification('Добро пожаловать!', 'Ловите рыбу, избегайте опасностей!');
@@ -1636,6 +1719,7 @@
     </script>
 </body>
 </html>
+
 
 
 
